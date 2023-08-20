@@ -5,8 +5,89 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Tetris"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="Tetris" FontWeight="Bold" SizeToContent="Height" Width="601" FontSize="30">
+    <Border Padding="8">
+        <!--Boarder Bacxkground-->
+        <Border.Background>
+            <LinearGradientBrush>
+                <LinearGradientBrush.GradientStops>
+                    <GradientStop Offset="0.0" Color="#FF0000" />
+                    <GradientStop Offset="0.5" Color="#000000"/>
+                    <GradientStop Offset="1.0" Color="#FF0000"/>
+                </LinearGradientBrush.GradientStops>
+            </LinearGradientBrush>
+        </Border.Background>
+        <Grid>
+            <!--Setting up the background OF THE GRID-->
+            <Grid.Background>
+                <SolidColorBrush Color="Black"/>
+            </Grid.Background>
+            <!--Grid layout-->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width=".60*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
         
-    </Grid>
+            <!--elements-->
+            <Label FontFamily="Garamond sarif" FontSize="36"
+                Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" 
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Foreground="Red" >
+                TETRIS
+            </Label>
+            <!--MinWidth = 332 //// minHeight = 541-->
+            <DockPanel LastChildFill="True" 
+                       Background="#000064"
+                       x:Name="plnDrawing"
+                       Grid.Column="0" Grid.Row="1"
+                       MinHeight="541" MinWidth="332" Margin="10,0,25,10">
+            </DockPanel>
+            <!--Lables to keep track of the scores-->
+
+            <Grid Grid.Column="1" Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Vertical">
+                    <Label Margin="0,0,0,60" FontFamily="Consolas Inconsolata monospaced" Content="Have Fun!!" DockPanel.Dock="Top" FontSize="35" HorizontalAlignment="Center">
+                        <Label.Foreground>
+                            <LinearGradientBrush>
+                                <LinearGradientBrush.GradientStops>
+                                    <GradientStop Color="#FFee66" Offset="0.0"/>
+                                    <GradientStop Color="GreenYellow" Offset="0.5"/>
+                                    <GradientStop Color="Aqua" Offset="1.0"/>
+                                </LinearGradientBrush.GradientStops>
+                            </LinearGradientBrush>
+                        </Label.Foreground>
+                    </Label>
+                    <Label Name="High" Margin="0,0,0,16"  Foreground="White" DockPanel.Dock="Top" HorizontalAlignment="Center">
+                        Hight Score
+                    </Label>
+                    <Label Margin="{Binding ElementName=High,Path=Margin}" x:Name="lblHighScore" Foreground="White" DockPanel.Dock="Top" HorizontalAlignment="Center">
+                        0
+                    </Label>
+                    <Label Margin="{Binding ElementName=High, Path=Margin}" Foreground="White" DockPanel.Dock="Top" HorizontalAlignment="Center">
+                        Current Score
+                    </Label>
+                    <Label x:Name="lblCurrentScore" Foreground="White" DockPanel.Dock="Top" HorizontalAlignment="Center">
+                        0
+                    </Label>
+                </StackPanel>
+                <Button Margin="0,0,0,10" Grid.Row="1" MinHeight="50px" HorizontalAlignment="Center"
+                        VerticalAlignment="Center" MinWidth="180px" Content="Restart">
+                    <Button.Background>
+                        <SolidColorBrush Color="Transparent"/>
+                    </Button.Background>
+                    <Button.Foreground>
+                        <SolidColorBrush Color="#F8F8F8" Opacity="0.6"/>
+                    </Button.Foreground>
+                </Button>
+            </Grid>
+        </Grid>
+    </Border>
 </Window>

@@ -48,5 +48,10 @@ namespace Tetris
             widthAnimation.Duration = new TimeSpan(5);
             btnRestart.BeginAnimation(Button.WidthProperty, widthAnimation);
         }//btnRestart_Click
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
     }//Class
 }//namespace

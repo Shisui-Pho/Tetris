@@ -13,6 +13,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Tetris.Structures;
 
 namespace Tetris
 {
@@ -51,7 +52,9 @@ namespace Tetris
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
-        }
+            GameGrid grid = new GameGrid();
+            grid.GetGrid(ref gameGrid);
+            //grdGameOver.Visibility = Visibility.Visible;
+        }//Window_Loaded
     }//Class
 }//namespace

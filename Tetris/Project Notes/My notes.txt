@@ -1,0 +1,14 @@
+﻿LEGEND 
+    # : Completed
+    & : Pending Task
+    % : Keep in mind
+
+
+The UI
+    & : Remove unnecessary comments
+
+
+THE GRID
+    % : The game grid is a 13 x 23 pixels
+    % : The Block Size is 30 pixels fixed{Cannot change it from the client side}
+    & : There's no space for the respawn of a new block {I need to fix that error.}

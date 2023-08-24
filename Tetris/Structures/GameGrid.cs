@@ -95,7 +95,6 @@ namespace Tetris.Structures
         }//PlotPoints
         private Line GetLine(Point[] p, System.Windows.Media.SolidColorBrush brush)
         {
-
             //Create the lines 
             Line ln = new Line();
             ln.StrokeThickness = 2;

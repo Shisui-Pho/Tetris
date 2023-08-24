@@ -7,6 +7,8 @@
         mc:Ignorable="d"
         Title="Tetris" FontWeight="Bold" SizeToContent="Height" Width="601" FontSize="30"
         SizeChanged="Window_SizeChanged"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanMinimize"
         >
     <Border Padding="8">
         <!--Boarder Bacxkground-->
@@ -26,12 +28,12 @@
             </Grid.Background>
             <!--Grid layout-->
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*" MinWidth="332" MaxWidth="332"/>
                 <ColumnDefinition Width=".60*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="*" MaxHeight="541" MinHeight="541"/>
             </Grid.RowDefinitions>
         
             <!--elements-->
@@ -50,7 +52,7 @@
                        x:Name="plnDrawing"
                        Grid.Column="0" Grid.Row="1"
                        MinHeight="541" MinWidth="332" Margin="10,0,25,10"
-                       MaxHeight="705" MaxWidth="432"                 
+                       MaxHeight="705" MaxWidth="432"  
                        >
             </DockPanel>
             <!--Lables to keep track of the scores-->
@@ -86,8 +88,10 @@
                         0
                     </Label>
                 </StackPanel>
-                <Button Margin="0,0,0,10" Grid.Row="1" MinHeight="50px" HorizontalAlignment="Center"
-                        VerticalAlignment="Center" MinWidth="180px" Content="Restart">
+                <Button x:Name="btnRestart" Margin="0,0,0,10" Grid.Row="1" MinHeight="50px" HorizontalAlignment="Center"
+                        VerticalAlignment="Center" MinWidth="180px" Content="Restart"
+                        MouseMove="btnRestart_MouseEnter" MouseEnter="btnRestart_MouseEnter" 
+                        MouseLeave="btnRestart_MouseLeave" Click="btnRestart_Click">
                     <Button.Background>
                         <SolidColorBrush Color="Transparent"/>
                     </Button.Background>

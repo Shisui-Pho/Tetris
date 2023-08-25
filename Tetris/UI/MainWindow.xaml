@@ -47,7 +47,7 @@
                 15 columns with size 30
                 
             -->
-            <Viewbox Grid.Column="0" Grid.Row="1" Margin="9,0,0,10">
+            <Viewbox x:Name="vbGrid" Grid.Column="0" Grid.Row="1" Margin="9,0,0,10">
                 <Canvas 
                        Background="#000064"
                        x:Name="gameGrid"

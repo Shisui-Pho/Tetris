@@ -64,7 +64,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Services\MapLogicalGrid.cs" />
     <Compile Include="Structures\GameGrid.cs" />
+    <Compile Include="Structures\LogicalGrid.cs" />
     <Compile Include="UI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

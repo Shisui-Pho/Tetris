@@ -1,17 +1,23 @@
-﻿using System.Windows.Controls;
+﻿/*
+ * Filename     :GameGrid.cs
+ * Purpose      : Ceate the gridlines as well as the virtual grid properties
+*/
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Shapes;
-//using System.Drawing;
-
 namespace Tetris.Structures
 {
     public class GameGrid
     {
-        public int BlockSize { get; }
-        public GameGrid()
+
+        //Imporatant properties of the grid
+        public int BlockSize { get; private set; }
+        public int Rows { get; private set; }
+        public int Columns { get; private set; }
+        public GameGrid(int BlockSize)
         {
-            BlockSize = 30;
+            this.BlockSize = BlockSize;
         }//ctor 01
         public void GetGrid(ref Canvas gridCanvas)
         {
@@ -34,11 +40,11 @@ namespace Tetris.Structures
             Point endPoint = new Point( xEnd, yEnd);
 
             //Number of lines
-            int iVeritalLines = (int)(gridCanvas.Width - 1) / BlockSize;
-            int iHorizontalLines = (int)(gridCanvas.Height - 1) / BlockSize;
+            Columns = (int)(gridCanvas.Width - 1) / BlockSize;
+            Rows = (int)(gridCanvas.Height - 1) / BlockSize;
 
             //Set the horizontal poits for the grid
-            for (int i= 0; i<= iHorizontalLines; i++)
+            for (int i= 0; i<= Rows; i++)
             {
                horizontalPoints.Add(new Point[] { startPoint, endPoint });
                 //Only the Y values need to be increased
@@ -57,7 +63,7 @@ namespace Tetris.Structures
             endPoint = new Point(xEnd, yEnd);
 
             //Set the vertical Points
-            for (int j=0; j<=iVeritalLines; j++)
+            for (int j=0; j<=Columns; j++)
             {
                 verticalPoints.Add(new Point[] { startPoint, endPoint });
                 //Only the x values need to be increased

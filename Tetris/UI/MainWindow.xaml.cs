@@ -42,6 +42,9 @@ namespace Tetris
 
         private  void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            Blocks bl = new Blocks();
+            int[,] block = bl.GetRandomBlock();
+            int[,] rotatedblock = bl.RotateBlock(block);
 
         }//Window_Loaded
     }//Class

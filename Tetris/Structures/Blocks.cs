@@ -8,6 +8,7 @@ namespace Tetris.Structures
 {
     public class Blocks
     {
+        //List to store all the blocks
         private List<int[,]> lstBlocks;
         public Blocks()
         {
@@ -50,11 +51,32 @@ namespace Tetris.Structures
 
         public int[,] GetRandomBlock()
         {
-            return default;
+            //Get a random number for the index of a random block in the list
+            Random rndNex = new Random();
+            int iblock = rndNex.Next(0, lstBlocks.Count);
+            return lstBlocks[iblock];
         }//GetRandomBlock
-        public int[,] RotateBlock(int[,] blockTorotate)
+        public int[,] RotateBlock(int[,] blockToRotate)
         {
-            return default;
+            //The new block dimensions should be the dimensions of the block but swapped
+            int[,] newBlock = new int[blockToRotate.GetLength(1), blockToRotate.GetLength(0)];
+
+            //For resetting and increamenting the rows and columns indexes for the values
+            int colIndex, rowIndex = 0;
+
+            //Block Rotation
+            for(int iCol = blockToRotate.GetLength(1) - 1; iCol >= 0; iCol--)
+            {
+                colIndex = 0; //Reset the starting index position to zero
+                for(int iRow = 0; iRow < blockToRotate.GetLength(0); iRow++)
+                {
+                    //Retrieve values form the old block and insert them into the new block
+                    newBlock[rowIndex, colIndex] = blockToRotate[iRow, iCol];
+                    colIndex++;
+                }//end for
+                rowIndex++;
+            }//end for
+            return newBlock;
         }//RotateBlock
     }//class
 }//namespace

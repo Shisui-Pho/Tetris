@@ -2,7 +2,7 @@
     # : Completed
     & : Pending Task/To Do
     % : Keep in mind
-
+    $ : Improve
 
 THE UI
     & : Remove unnecessary comments
@@ -43,3 +43,11 @@ BLOCK : Block logical structure Logical Structure
 
        Line Block  : [0] = 7 ; [1] =7 ; [2] = 7 ; [3] = 7 
                     --> One dimentional array
+
+
+LOGICALGRID : CanMove()
+       $ : A bug detected in evaluating the left and right moveme,(recheck for bound, the code that needs to
+                be fixed is represented by a region block)
+       $ : Once the above bug has been fixed, create a generic method to do the evaluation
+
+       & : Test for all situation

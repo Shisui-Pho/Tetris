@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Tetris.Interfaces;
 using Tetris.Enums;
+using Tetris.Interfaces;
 namespace Tetris.Structures
 {
     //Grid Model
@@ -172,7 +168,6 @@ namespace Tetris.Structures
             //If none of the direction
             return false;
         }//CanMove
-
         private bool CanMoveDown(int[,] block, int iStartRow, int iStartCol)
         {
             //There are two situation that need to be tested

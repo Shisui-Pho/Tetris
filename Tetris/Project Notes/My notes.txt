@@ -46,8 +46,8 @@ BLOCK : Block logical structure Logical Structure
 
 
 LOGICALGRID : CanMove()
-       $ : A bug detected in evaluating the left and right moveme,(recheck for bound, the code that needs to
-                be fixed is represented by a region block)
+       $ : A bug detected in evaluating the left and right movement,(recheck for bounds, the code that needs to
+                be fixed is represented by thes "BugDetected" region block)
        $ : Once the above bug has been fixed, create a generic method to do the evaluation
 
        & : Test for all situation

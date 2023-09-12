@@ -25,8 +25,13 @@ namespace Tetris.Structures
                 }//end for {j}
             }//end for {i}
 
+            //for (int i = 0; i < Grid.GetLength(0); i++)
+            //{
+            //    Grid[i, Grid.GetLength(1)-1] = 5;
+            //}
             //For testing
-            Grid[5, 2] = 1;
+            Grid[10, 5] = 1;
+
         }//InitializeGrid
         public void ResetGrid()
         {
@@ -45,46 +50,55 @@ namespace Tetris.Structures
         public bool MoveBlock(int[,] blockToMove, MoveAction action, int StartRow, int StartColumn, ref int iScore)
         {
             if (action == MoveAction.Rotated)
-                throw new Exception("Cannot move block that is being rotated, call AddRotatedBlockFirst");
+                throw new ArgumentException("Cannot move block that is being rotated, call AddRotatedBlockFirst");
             if (!CanMove(blockToMove, StartRow, StartColumn, action)) //Evaluate all possible movements
                 return false;
 
             //AT THIS POINT THE BLOCK IS GOOD TO GO
-            int iToStartRow = StartRow;
-            int iToStartColumn = StartColumn;
+            //int iToStartRow = StartRow;
+            //int iToStartColumn = StartColumn;
             
-            for(int irow = 0; irow<blockToMove.GetLength(0); irow++)
-            {
-                for(int iCol = 0; iCol< blockToMove.GetLength(1); iCol++)
-                {
-                    //Set the values in the grid
-                    //NOTE : To prevent errors when moving we first check if the block value is worth moving or not
-                    if(blockToMove[irow,iCol] != 0)
-                        Grid[iToStartRow, iToStartColumn] = blockToMove[irow, iCol];
-
-                    //Clearing Entries for left and right
-                    //if (Grid[StartRow + irow, StartColumn + blockToMove.GetLength(0)] == blockToMove[irow, iCol])
-                    if (action == MoveAction.MoveLeft)
-                            Grid[StartRow + irow, StartColumn + blockToMove.GetLength(0)] = 0;
-                    if (action == MoveAction.MoveRight)
-                        Grid[StartRow + irow, StartColumn - 1] = 0;
-                    iToStartColumn++;
-                }//end for {columns}
-                //Reset the starting position of the column
-                iToStartColumn = StartColumn;
-                //Increase the starting position of the row
-                iToStartRow++;
-            }//end for {rows}
-             //Clearing entries for top
+            int noRows = blockToMove.GetLength(0); //Number of rows
+            int noColumns = blockToMove.GetLength(1);//Number of columns
+            
+            //If the move action is downwards
             if (action == MoveAction.MoveDown)
             {
-                for (int iCol = 0; iCol < blockToMove.GetLength(1); iCol++)
+                for(int iCurrentRow = StartRow + noRows; iCurrentRow >= StartRow; iCurrentRow--)
                 {
-                    
+                    for (int iCurrentColumn = StartColumn; iCurrentColumn < StartColumn + noColumns; iCurrentColumn++)
+                    {
+                        if(Grid[iCurrentRow -1, iCurrentColumn] >= 0)
+                            Grid[iCurrentRow, iCurrentColumn] = Grid[iCurrentRow - 1, iCurrentColumn];
+                    }
                 }
-            }
-            EvaluateRows(ref iScore);
-            return default;
+            }//end moving down movement
+
+            if (action == MoveAction.MoveLeft)
+            {
+                for (int iCurrentColumn = StartColumn -1; iCurrentColumn < StartColumn + noColumns + 1; iCurrentColumn++)
+                {
+                    //TO DO : Move the block left
+                    for (int iCurrentRow = StartRow; iCurrentRow < noRows + StartRow; iCurrentRow++)
+                    {
+                        if (Grid[iCurrentRow, iCurrentColumn + 1] >= 0)
+                            Grid[iCurrentRow, iCurrentColumn] = Grid[iCurrentRow, iCurrentColumn + 1];
+                    }
+                }//end for
+            }//end moving down movement
+
+            if (action == MoveAction.MoveRight)
+            {
+                for (int iCurrentColumn = StartColumn + noColumns; iCurrentColumn >= StartColumn; iCurrentColumn--)
+                {
+                    for (int iCurrentRow = StartRow; iCurrentRow < noRows + StartRow; iCurrentRow++)
+                    {
+                        if (Grid[iCurrentRow, iCurrentColumn - 1] >= 0)
+                            Grid[iCurrentRow, iCurrentColumn] = Grid[iCurrentRow, iCurrentColumn - 1];
+                    }
+                }//end for
+            }//end moving down movement
+            return true;
         }//MoveBlock
         public void AddRotatedBlock(int[,] oldBlock, int[,] newBlock, int iStartRow, int iStartCol)
         {
@@ -116,20 +130,19 @@ namespace Tetris.Structures
             if (direction == MoveAction.MoveDown)
             {
                 //Check grid bounds first
-                if ((StartRow + blockToMove.GetLength(0)) > Grid.GetLength(0))
+                if ((StartRow + blockToMove.GetLength(0)) >= Grid.GetLength(0))
                     return false;
 
                 if (CanMoveDown(blockToMove, StartRow, StartCol))
                     return true;
-                else
-                    return false;
+                return false;
             }//end if  {ToDown movement}
 
             #region BugDetected
             if (direction == MoveAction.MoveLeft)
             {
                 //Check grid bounds first
-                if (StartCol == 0)
+                if (StartCol <=0)
                     return false;
 
                 //Check the left of the block
@@ -147,7 +160,7 @@ namespace Tetris.Structures
             if(direction == MoveAction.MoveRight)
             {
                 //Check grid bounds first
-                if (StartCol >= Grid.GetLength(1))
+                if (StartCol + blockToMove.GetLength(1) >= Grid.GetLength(1))
                     return false;
 
                 //Check the right of the block
@@ -155,7 +168,7 @@ namespace Tetris.Structures
                 for(int iRow = 0; iRow < blockToMove.GetLength(0); iRow++)
                 {
                     //BUG DETECTION
-                    if (Grid[iReference, (StartCol + blockToMove.GetLength(1))] != 0)
+                    if (Grid[iReference, StartCol + blockToMove.GetLength(1)] != 0)
                         return false;
                     iReference++;
                 }//end for {iCol}
@@ -177,62 +190,27 @@ namespace Tetris.Structures
             //int iStartRow = 0, iStartCol = 0;
             //int[,] block = new int[7,7];
 
-            //Default Check
-            int emptyRow = 0;            
+            //Default Check   
+
+            int noRows = block.GetLength(0);
+            int iCol = block.GetLength(1);
+
             int iCount = 0;
             int iReference = iStartCol;
-            for (int r = 0; r < block.Length; r++)
-            {
-                if (Grid[(iStartRow + block.GetLength(0)), iReference] == 0)
+            for (int Columns = 0; Columns < iCol; Columns++)
+            {       //1. The row has totally nothing underneath it......
+                if (Grid[noRows + iStartRow, iStartCol + Columns] == 0 
+                    //The row makes a perfect fit 
+                    || (Grid[noRows + iStartRow -1, iStartCol + Columns] == 0 && Grid[noRows + iStartRow, iStartCol + Columns] > 0))
                 {
                     iCount++;
-                    emptyRow = r;
                 }
                 iReference++;
             }
-            if (iCount == block.GetLength(0))
+            if (iCount == block.GetLength(1))
                 return true;//Can move down
-            if (iCount == 0)
-                return false; //Cannot move down
-
-
-            //SPECIAL BLOCKS CHECK CHECKS
-
-            //First Situation for all blocks
-            //This are the L blocks
-            if(iCount == 1 && block.GetLength(1) == 2)
-            {
-                if (DownCount(block, iStartRow, iStartCol) == 2)
-                    return true;
-
-                //TO DO  Situation 2 for L1 and L2 blocks
-                //All this positions are ralative to the position of the block in the grid
-                int indexRow1 = 0, indexRow2 = 0, indexCol1 = 0, indexCol2 = 0;
-                if (emptyRow == 1)
-                {
-                    //Determining the indecies of the empty spaces for L2
-                    //-Since the blocks shapes are fixed, determining the indecies is easier by moving relative to the empty cell
-                    indexRow1 = iStartRow + block.GetLength(0) ; indexCol1 = iStartCol + block.GetLength(1) - 1;
-                    indexRow2 = indexRow1 - 1; indexCol2 = indexCol1 - 1;
-                }
-                if(emptyRow == 0)
-                {
-                    // Determining the indecies of the empty spaces for L1
-                    indexRow2 = iStartRow + block.GetLength(0) - 2; indexCol2 = iStartCol + block.GetLength(1) + 1;
-                    indexRow1 = indexRow2 + 2; indexCol1 = indexCol2 -1;
-                }
-                if (Grid[indexRow1, indexCol1] == 0 && Grid[indexRow2, indexCol2] == 0)
-                    return true;
-            }//end count 1
-
-            if (iCount == 2)
-            {
-                //TO DO Situation 1
-                //Recheck
-                if (DownCount(block,iStartRow,iStartCol) == 3)
-                    return true;
-            }//end cout 2
             return false;
+            
         }//IsPerfectMatch
         private int DownCount(int[,] block, int iStartRow, int iStartCol)
         {

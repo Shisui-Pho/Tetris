@@ -8,6 +8,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using Tetris.Services;
 using Tetris.Structures;
+using Tetris.Game;
 namespace Tetris
 {
     /// <summary>
@@ -42,9 +43,10 @@ namespace Tetris
 
         private  void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Blocks bl = new Blocks();
-            int[,] block = bl.GetRandomBlock();
-            int[,] rotatedblock = bl.RotateBlock(block);
+            GamePlay gm = new GamePlay(gameGrid);
+            //Blocks bl = new Blocks();
+            //int[,] block = bl.GetRandomBlock();
+            //int[,] rotatedblock = bl.RotateBlock(block);
 
         }//Window_Loaded
     }//Class

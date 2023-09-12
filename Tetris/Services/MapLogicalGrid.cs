@@ -10,6 +10,26 @@ namespace Tetris.Services
 {
     public class MapLogicalGrid
     {
+        public static void MapGrid(Canvas gridCanvas, LogicalGrid grid)
+        {
+            //Initial X and Y 
+            //--Represents the (0,0) location at the top coner
+            int X_Coordinate = 0;
+            int Y_Coordinate = 0;
+            for (int iRow = 0; iRow < grid.Grid.GetLength(0); iRow++)
+            {
+                for (int iColumn = 0; iColumn < grid.Grid.GetLength(1); iColumn++)
+                {
+                    MapColours(ref gridCanvas, X_Coordinate, Y_Coordinate,
+                               GetBrush(grid.Grid[iRow, iColumn]),
+                               new System.Drawing.Size() { Width = grid.BlockSize, Height = grid.BlockSize }
+                               );
+                    X_Coordinate += grid.BlockSize; //Move right
+                }//end Column loop
+                X_Coordinate = 0;//Start from zero again
+                Y_Coordinate += grid.BlockSize;//Move Down
+            }//end Row loop
+        }//Map
         /// <summary>
         /// Create a graphic representation of the 2d array grid
         /// </summary>

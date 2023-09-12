@@ -15,16 +15,16 @@ namespace Tetris.Structures
         public int BlockSize { get; private set; }
         public int Rows { get; private set; }
         public int Columns { get; private set; }
-        public GameGrid(int BlockSize)
+        public GameGrid(int BlockSize = 30)
         {
             this.BlockSize = BlockSize;
         }//ctor 01
-        public void GetGrid(ref Canvas gridCanvas)
+        public void GetGrid(Canvas gridCanvas)
         {
-            GenerateGrid(ref gridCanvas);
+            GenerateGrid(gridCanvas);
         }//GetGrid method
 
-        private void GenerateGrid(ref Canvas gridCanvas)
+        private void GenerateGrid(Canvas gridCanvas)
         {
             List<Point[]> horizontalPoints = new List<Point[]>();
             List<Point[]> verticalPoints = new List<Point[]>();

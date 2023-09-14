@@ -5,10 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Tetris"
         mc:Ignorable="d"
+        x:Name="CfrmTetrisGame"
         Title="Tetris" FontWeight="Bold" SizeToContent="Height" Width="601" FontSize="30"
-        SizeChanged="Window_SizeChanged"
         WindowStartupLocation="CenterOwner"
-        Loaded="Window_Loaded"
+        KeyDown="CfrmTetrisGame_KeyDown"
+        PreviewKeyDown="CfrmTetrisGame_PreviewKeyDown"
+        KeyUp="CfrmTetrisGame_KeyUp"
+        PreviewKeyUp="CfrmTetrisGame_PreviewKeyUp"
+        Loaded="CfrmTetrisGame_Loaded"
         >
     <Border Padding="8">
         <!--Boarder Bacxkground-->

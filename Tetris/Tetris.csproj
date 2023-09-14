@@ -66,7 +66,6 @@
     </Compile>
     <Compile Include="Enums\GameStatus.cs" />
     <Compile Include="Enums\MoveAction.cs" />
-    <Compile Include="Game\GamePlay.cs" />
     <Compile Include="Interfaces\ILogicalGrid.cs" />
     <Compile Include="Services\MapLogicalGrid.cs" />
     <Compile Include="Structures\Blocks.cs" />
@@ -105,6 +104,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Project Notes\My notes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Game\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

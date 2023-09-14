@@ -8,11 +8,12 @@ namespace Tetris.Structures
     {
         public int[,] Grid { get; }
         public int BlockSize { get; }
-        public readonly int StartRowPosition = 5;
-        public readonly int StartColumnPosition = 5;
+        public readonly int StartRowPosition = 1;
+        public readonly int StartColumnPosition;
         public LogicalGrid(GameGrid grid)
         {
             Grid = new int[grid.Rows, grid.Columns];
+            StartColumnPosition = Grid.GetLength(1) / 2;
             BlockSize = grid.BlockSize;
             InitializeGrid();
         }//LogicalGrid
@@ -105,8 +106,10 @@ namespace Tetris.Structures
                     //TO DO : Move the block left
                     for (int iCurrentRow = StartRow; iCurrentRow < noRows + StartRow; iCurrentRow++)
                     {
-                        if (Grid[iCurrentRow, iCurrentColumn + 1] >= 0)
-                            Grid[iCurrentRow, iCurrentColumn] = Grid[iCurrentRow, iCurrentColumn + 1];
+                      
+                            if (Grid[iCurrentRow, iCurrentColumn + 1] >= 0)
+                                Grid[iCurrentRow, iCurrentColumn] = Grid[iCurrentRow, iCurrentColumn + 1];
+                    
                     }//end for
                 }//end for
             }//end moving down movement
@@ -230,7 +233,7 @@ namespace Tetris.Structures
         private bool CanMoveDown(int[,] block, int iStartRow, int iStartCol, out MovementStatus status)
         {
             //Game over check should be first
-            if(IsGameOver(iStartRow, iStartCol, block))
+            if(!IsGameOver(iStartRow, iStartCol, block))
             {
                 status = MovementStatus.GameOver;
                 return false;
@@ -320,5 +323,24 @@ namespace Tetris.Structures
                 }//Loop throgh the columns
             }//Loop through the rows, starting from the bottom
         }//ReplaceRows
+
+        public bool InsertBlock(int[,] blockToInsert)
+        {
+            int iColRef = StartColumnPosition;
+            int iRowRef = StartRowPosition;
+            if (!IsGameOver(iRowRef, iColRef, blockToInsert))
+                return false;
+            for (int row = 0; row < blockToInsert.GetLength(0); row++)
+            {
+                for (int col = 0; col < blockToInsert.GetLength(1); col++)
+                {
+                    Grid[iRowRef, iColRef] = blockToInsert[row, col];
+                    iColRef++;
+                }//end col for
+                iColRef = StartColumnPosition;
+                iRowRef++;
+            }//end row for
+            return true;
+        }//InsertBlock
     }//class
 }//namesace

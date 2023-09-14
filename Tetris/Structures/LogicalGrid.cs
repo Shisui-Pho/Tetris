@@ -106,10 +106,12 @@ namespace Tetris.Structures
                     //TO DO : Move the block left
                     for (int iCurrentRow = StartRow; iCurrentRow < noRows + StartRow; iCurrentRow++)
                     {
-                      
+                        try
+                        {
                             if (Grid[iCurrentRow, iCurrentColumn + 1] >= 0)
                                 Grid[iCurrentRow, iCurrentColumn] = Grid[iCurrentRow, iCurrentColumn + 1];
-                    
+                        }
+                        catch { }
                     }//end for
                 }//end for
             }//end moving down movement
@@ -120,9 +122,13 @@ namespace Tetris.Structures
                 {
                     for (int iCurrentRow = StartRow; iCurrentRow < noRows + StartRow; iCurrentRow++)
                     {
-                        if (Grid[iCurrentRow, iCurrentColumn - 1] >= 0)
-                            Grid[iCurrentRow, iCurrentColumn] = Grid[iCurrentRow, iCurrentColumn - 1];
-                    }
+                        try 
+                        { 
+                            if (Grid[iCurrentRow, iCurrentColumn - 1] >= 0)
+                                Grid[iCurrentRow, iCurrentColumn] = Grid[iCurrentRow, iCurrentColumn - 1];
+                        }
+                        catch { }
+                }
                 }//end for
             }//end moving down movement
             EvaluateRows(ref iScore);

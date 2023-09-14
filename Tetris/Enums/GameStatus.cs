@@ -1,11 +1,13 @@
 ﻿namespace Tetris.Enums
 {
-    public enum GameStatus
+    public enum MovementStatus
     {
         GameOver,
         Newblock,
         CannotMoveRight,
         CannotMoveLeft,
-        CannotMoveDown
+        CannotMoveDown,
+        CanMove,
+        Default
     }//GameStatus
 }//namespace

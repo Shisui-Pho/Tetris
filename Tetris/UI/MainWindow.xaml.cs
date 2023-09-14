@@ -8,6 +8,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using Tetris.Services;
 using Tetris.Structures;
+using Tetris.Enums;
 using Tetris.Game;
 namespace Tetris
 {

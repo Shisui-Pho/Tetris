@@ -26,7 +26,7 @@ namespace Tetris
         private readonly Blocks Blocks;
 
         //For game control
-        private bool leftKeyPressed = false, rightKeyPressed = false, downKeyPressed = false, isGamePaused = false;
+        private bool leftKeyPressed = false, rightKeyPressed = false, downKeyPressed = false;
         private int CurrentScore = 0, HighScore = 0, StartRow, StartCol;
         private int[,] CurrentBlock;
         public MainWindow()
@@ -40,7 +40,6 @@ namespace Tetris
             L_GameGrid = new LogicalGrid(gridLayout);
             StartRow = L_GameGrid.StartRowPosition;
             StartCol = L_GameGrid.StartColumnPosition;
-
             Blocks = new Blocks();
         }//ctor main
         private void InitializeGame()
@@ -53,67 +52,97 @@ namespace Tetris
         #region EventsHandlers
         private void GameTimer_Tick(object sender, EventArgs e)
         {
-            //Move the block down
+            MovementStatus st = L_GameGrid.MoveBlock(CurrentBlock, Direction.MoveDown, StartRow, StartCol, ref CurrentScore);
+            if(st == MovementStatus.CanMove)
+            {
+                StartRow++;
+                MapLogicalGrid.MapGrid(gameGrid, L_GameGrid);
+                lblCurrentScore.Content = CurrentScore;
+            }//can move
+            if (st == MovementStatus.GameOver)
+                GameOver();
+            if (st == MovementStatus.Newblock)
+                NewBlock();
         }//GameTimer_Tick
-
+        private void NewBlock()
+        {
+            CurrentBlock = Blocks.GetRandomBlock();
+            L_GameGrid.InsertBlock(CurrentBlock);
+            StartRow = L_GameGrid.StartRowPosition;
+            StartCol = L_GameGrid.StartColumnPosition;
+            lblCurrentScore.Content = CurrentScore;
+        }//NewBlock
         private void CfrmTetrisGame_KeyDown(object sender, KeyEventArgs e)
         {
             MovementStatus st = MovementStatus.Default;
             if (e.Key == Key.Left || e.Key == Key.A)
             {
-                st = L_GameGrid.MoveBlock(CurrentBlock, MoveAction.MoveLeft, StartRow, StartCol, ref CurrentScore);
+                st = L_GameGrid.MoveBlock(CurrentBlock, Direction.MoveLeft, StartRow, StartCol, ref CurrentScore);
                 if (st == MovementStatus.CanMove)
                 {
                     StartCol--;
                     MapLogicalGrid.MapGrid(gameGrid, L_GameGrid);
                     lblCurrentScore.Content = CurrentScore;
                 }//can move
+                if (st == MovementStatus.GameOver)
+                    GameOver();
                 leftKeyPressed = true;
             }//Left key
             if(e.Key == Key.Right || e.Key == Key.D)
             {
                 //Try to do the movement
-                st = L_GameGrid.MoveBlock(CurrentBlock, MoveAction.MoveRight, StartRow, StartCol, ref CurrentScore);
+                st = L_GameGrid.MoveBlock(CurrentBlock, Direction.MoveRight, StartRow, StartCol, ref CurrentScore);
                 if (st == MovementStatus.CanMove)
                 {
                     StartCol++;
                     MapLogicalGrid.MapGrid(gameGrid, L_GameGrid);
                     lblCurrentScore.Content = CurrentScore;
                 }//can move
+                if (st == MovementStatus.GameOver)
+                    GameOver();
                 rightKeyPressed = true;
             }//Right key
-            if(e.Key == Key.Down || e.Key == Key.S)
+            if(e.Key == Key.Down || e.Key == Key.S || e.Key == Key.Space)
             {
-                st = L_GameGrid.MoveBlock(CurrentBlock, MoveAction.MoveDown, StartRow, StartCol, ref CurrentScore);
+                st = L_GameGrid.MoveBlock(CurrentBlock, Direction.MoveDown, StartRow, StartCol, ref CurrentScore);
                 if(st == MovementStatus.CanMove)
                 {
                     StartRow++;
                     MapLogicalGrid.MapGrid(gameGrid, L_GameGrid);
                     lblCurrentScore.Content = CurrentScore;
                 }//cann move
+                if (st == MovementStatus.GameOver)
+                    GameOver();
                 downKeyPressed = true;
             }//Down key
+            if(e.Key == Key.C || e.Key == Key.R)
+            {
+                int[,] rotatedblock = Blocks.RotateBlock(CurrentBlock);
+                L_GameGrid.AddRotatedBlock(CurrentBlock, rotatedblock, StartRow, StartCol);
+                CurrentBlock = rotatedblock;
+                MapLogicalGrid.MapGrid(gameGrid, L_GameGrid);
+            }//for block Rotation
+
+            if(e.Key == Key.P || e.Key == Key.Pause)
+            {
+                grdPaused.Visibility = Visibility.Visible;
+                lblPausedScore.Text = "Score : " + CurrentScore;
+                gameTimer.Stop();
+                downKeyPressed = true;
+                leftKeyPressed = true;
+                rightKeyPressed = true;
+            }//pause game
 
             //If a new block is needed
             if (st == MovementStatus.Newblock)
-            {
-                CurrentBlock = Blocks.GetRandomBlock();
-                L_GameGrid.InsertBlock(CurrentBlock);
-                StartRow = L_GameGrid.StartRowPosition;
-                StartCol = L_GameGrid.StartColumnPosition;
-            }//
+                NewBlock();
             //MessageBox.Show("key is now down");
         }//CfrmTetrisGame_KeyDown
 
         private void CfrmTetrisGame_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            //Prevent Diagonal movements
-/*            if (downKeyPressed || leftKeyPressed || rightKeyPressed)
-            {
-                e.Handled = true;
-                return;
-            }*/
-            //MessageBox.Show("Can press key!!!!!");
+            //TO DO :
+            //-Handle down diagonal movements
         }//CfrmTetrisGame_PreviewKeyDown
 
         private void CfrmTetrisGame_KeyUp(object sender, KeyEventArgs e)
@@ -125,14 +154,19 @@ namespace Tetris
             if (e.Key == Key.Down)
                 downKeyPressed = false;
         }//CfrmTetrisGame_KeyUp
-        private void MoveDown()
-        {
-
-        }
         private void CfrmTetrisGame_PreviewKeyUp(object sender, KeyEventArgs e)
         {
 
         }//CfrmTetrisGame_PreviewKeyUp
+
+        private void btnContinue_Click(object sender, RoutedEventArgs e)
+        {
+            grdPaused.Visibility = Visibility.Hidden;
+            gameTimer.Start();
+            downKeyPressed = false;
+            leftKeyPressed = false;
+            rightKeyPressed = false;
+        }//btnContinue_Click
 
         private void CfrmTetrisGame_Loaded(object sender, RoutedEventArgs e)
         {
@@ -219,7 +253,7 @@ namespace Tetris
         private void Tmr_Tick(object sender, EventArgs e)
         {
             int iScore = 0;
-            Grid.MoveBlock(_ToMove, MoveAction.MoveDown, i, j, ref iScore);
+            Grid.MoveBlock(_ToMove, Direction.MoveDown, i, j, ref iScore);
             MapLogicalGrid.MapGrid(cn, Grid);
             i++;
             //j++;

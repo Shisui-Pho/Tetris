@@ -1,6 +1,6 @@
 ﻿namespace Tetris.Enums
 {
-    public enum MoveAction
+    public enum Direction
     {
         MoveLeft,
         MoveRight,

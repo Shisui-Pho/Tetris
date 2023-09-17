@@ -7,7 +7,7 @@ namespace Tetris.Interfaces
         int BlockSize { get; }
         void ResetGrid();
         bool InsertBlock(int[,] blockToInsert);
-        MovementStatus MoveBlock(int[,] blockToMove,MoveAction direction, int StartRow, int StartColumn, ref int iScore);
+        MovementStatus MoveBlock(int[,] blockToMove,Direction direction, int StartRow, int StartColumn, ref int iScore);
         void AddRotatedBlock(int[,] oldBlock, int[,] newBlock, int iStartRow, int iStartCol);
         //bool CanMove(int[,] blockToMove,int StartRow, int StartCol,MoveAction direction);
     }//interface

@@ -32,7 +32,7 @@ namespace Tetris
         public MainWindow()
         {
             InitializeComponent();
-            InitializeGame();
+            //InitializeGame();
             //Initialize readOnly Objects
             gridLayout = new GameGrid();
             gridLayout.GetGrid(gameGrid);
@@ -52,17 +52,19 @@ namespace Tetris
         #region EventsHandlers
         private void GameTimer_Tick(object sender, EventArgs e)
         {
-            MovementStatus st = L_GameGrid.MoveBlock(CurrentBlock, Direction.MoveDown, StartRow, StartCol, ref CurrentScore);
-            if(st == MovementStatus.CanMove)
-            {
-                StartRow++;
-                MapLogicalGrid.MapGrid(gameGrid, L_GameGrid);
-                lblCurrentScore.Content = CurrentScore;
-            }//can move
-            if (st == MovementStatus.GameOver)
-                GameOver();
-            if (st == MovementStatus.Newblock)
-                NewBlock();
+            //MovementStatus st = L_GameGrid.MoveBlock(CurrentBlock, Direction.MoveDown, StartRow, StartCol);
+            //if(st == MovementStatus.CanMove)
+            //{
+            //    StartRow++;
+            //    MapLogicalGrid.MapGrid(gameGrid, L_GameGrid);
+            //    lblCurrentScore.Content = CurrentScore;
+            //}//can move
+            //if (st == MovementStatus.GameOver)
+            //    GameOver();
+            //if (st == MovementStatus.Newblock){
+            //L_GameGrid.EvaluateRowsAndRemove(ref CurrentScore);
+            //    }
+            //    NewBlock();
         }//GameTimer_Tick
         private void NewBlock()
         {
@@ -71,13 +73,14 @@ namespace Tetris
             StartRow = L_GameGrid.StartRowPosition;
             StartCol = L_GameGrid.StartColumnPosition;
             lblCurrentScore.Content = CurrentScore;
+            MapLogicalGrid.MapGrid(gameGrid, L_GameGrid);
         }//NewBlock
         private void CfrmTetrisGame_KeyDown(object sender, KeyEventArgs e)
         {
             MovementStatus st = MovementStatus.Default;
             if (e.Key == Key.Left || e.Key == Key.A)
             {
-                st = L_GameGrid.MoveBlock(CurrentBlock, Direction.MoveLeft, StartRow, StartCol, ref CurrentScore);
+                st = L_GameGrid.MoveBlock(CurrentBlock, Direction.MoveLeft, StartRow, StartCol);
                 if (st == MovementStatus.CanMove)
                 {
                     StartCol--;
@@ -91,7 +94,7 @@ namespace Tetris
             if(e.Key == Key.Right || e.Key == Key.D)
             {
                 //Try to do the movement
-                st = L_GameGrid.MoveBlock(CurrentBlock, Direction.MoveRight, StartRow, StartCol, ref CurrentScore);
+                st = L_GameGrid.MoveBlock(CurrentBlock, Direction.MoveRight, StartRow, StartCol);
                 if (st == MovementStatus.CanMove)
                 {
                     StartCol++;
@@ -104,7 +107,7 @@ namespace Tetris
             }//Right key
             if(e.Key == Key.Down || e.Key == Key.S || e.Key == Key.Space)
             {
-                st = L_GameGrid.MoveBlock(CurrentBlock, Direction.MoveDown, StartRow, StartCol, ref CurrentScore);
+                st = L_GameGrid.MoveBlock(CurrentBlock, Direction.MoveDown, StartRow, StartCol);
                 if(st == MovementStatus.CanMove)
                 {
                     StartRow++;
@@ -118,9 +121,12 @@ namespace Tetris
             if(e.Key == Key.C || e.Key == Key.R)
             {
                 int[,] rotatedblock = Blocks.RotateBlock(CurrentBlock);
-                L_GameGrid.AddRotatedBlock(CurrentBlock, rotatedblock, StartRow, StartCol);
-                CurrentBlock = rotatedblock;
-                MapLogicalGrid.MapGrid(gameGrid, L_GameGrid);
+                bool rotated = L_GameGrid.AddRotatedBlock(CurrentBlock, rotatedblock, StartRow, StartCol);
+                if (rotated)
+                {
+                    CurrentBlock = rotatedblock;
+                    MapLogicalGrid.MapGrid(gameGrid, L_GameGrid);
+                }
             }//for block Rotation
 
             if(e.Key == Key.P || e.Key == Key.Pause)
@@ -135,7 +141,11 @@ namespace Tetris
 
             //If a new block is needed
             if (st == MovementStatus.Newblock)
+            {
+                L_GameGrid.EvaluateRowsAndRemove(ref CurrentScore);
                 NewBlock();
+            }//
+                
             //MessageBox.Show("key is now down");
         }//CfrmTetrisGame_KeyDown
 
@@ -196,7 +206,7 @@ namespace Tetris
         #region Event Game Functions Helpers
         private void GameOver()
         {
-            gameTimer.Stop();
+            //gameTimer.Stop();
             grdGameOver.Visibility = Visibility.Visible;
             lblScore.Text = "Score : " + CurrentScore.ToString();
         }//GameOver
@@ -223,41 +233,41 @@ namespace Tetris
             MapLogicalGrid.MapGrid(gameGrid, L_GameGrid);
 
             //Start the timer
-            gameTimer.Start();
+            //gameTimer.Start();
         }//RestartGame
         #endregion
     }//Class
     #region GamePlay Test
-    public class GamePlay
-    {
-        private LogicalGrid Grid;
-        private Blocks Blocks;
-        private int[,] _ToMove;
-        int i = 5, j = 5;
-        private Canvas cn;
-        public GamePlay(Canvas canvas)
-        {
-            GameGrid gridLayout = new GameGrid();
-            gridLayout.GetGrid(canvas);
-            Blocks = new Blocks();
-            Grid = new LogicalGrid(gridLayout);
-            _ToMove = Blocks.GetRandomBlock();
-            Grid.AddRotatedBlock(_ToMove, _ToMove, i, j);
-            MapLogicalGrid.MapGrid(canvas, Grid);
-            DispatcherTimer tmr = new DispatcherTimer();
-            tmr.Interval = new TimeSpan(0, 0, 1);
-            tmr.Tick += Tmr_Tick;
-            cn = canvas;
-            tmr.Start();
-        }//ctor 01
-        private void Tmr_Tick(object sender, EventArgs e)
-        {
-            int iScore = 0;
-            Grid.MoveBlock(_ToMove, Direction.MoveDown, i, j, ref iScore);
-            MapLogicalGrid.MapGrid(cn, Grid);
-            i++;
-            //j++;
-        }//Tmr_Tick
+    //public class GamePlay
+    //{
+    //    private LogicalGrid Grid;
+    //    private Blocks Blocks;
+    //    private int[,] _ToMove;
+    //    int i = 5, j = 5;
+    //    private Canvas cn;
+    //    public GamePlay(Canvas canvas)
+    //    {
+    //        GameGrid gridLayout = new GameGrid();
+    //        gridLayout.GetGrid(canvas);
+    //        Blocks = new Blocks();
+    //        Grid = new LogicalGrid(gridLayout);
+    //        _ToMove = Blocks.GetRandomBlock();
+    //        Grid.AddRotatedBlock(_ToMove, _ToMove, i, j);
+    //        MapLogicalGrid.MapGrid(canvas, Grid);
+    //        DispatcherTimer tmr = new DispatcherTimer();
+    //        tmr.Interval = new TimeSpan(0, 0, 1);
+    //        tmr.Tick += Tmr_Tick;
+    //        cn = canvas;
+    //        tmr.Start();
+    //    }//ctor 01
+    //    private void Tmr_Tick(object sender, EventArgs e)
+    //    {
+    //        int iScore = 0;
+    //        Grid.MoveBlock(_ToMove, Direction.MoveDown, i, j);
+    //        MapLogicalGrid.MapGrid(cn, Grid);
+    //        i++;
+    //        //j++;
+    //    }//Tmr_Tick
         #endregion
-    }//class
+    //}//class
 }//namespace

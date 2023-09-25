@@ -10,8 +10,11 @@ namespace Tetris.Services
 {
     public class MapLogicalGrid
     {
+        private static readonly Color BackGroundColor_ = (Color)ColorConverter.ConvertFromString("#000064");
         public static void MapGrid(Canvas gridCanvas, LogicalGrid grid)
         {
+            gridCanvas.Children.Clear();//Remove all the children of the grid canvas
+            gridCanvas.Background = new SolidColorBrush(BackGroundColor_);
             //Initial X and Y 
             //--Represents the (0,0) location at the top coner
             int X_Coordinate = 0;
@@ -70,13 +73,14 @@ namespace Tetris.Services
         private static void MapColours(ref Canvas gr, int X_Coordinate, int Y_Coordinate, SolidColorBrush br,System.Drawing.Size size)
         {
             Rectangle _rc = new Rectangle();
+            var strokebrush = new SolidColorBrush(Color.FromRgb(byte.MaxValue, byte.MaxValue, byte.MaxValue));
+            strokebrush.Opacity = 0.65;
             _rc.Width = size.Width;
             _rc.Height = size.Height;
+            _rc.Stroke = strokebrush;
             _rc.Fill = br;
-            _rc.Stroke = new SolidColorBrush(Color.FromArgb(byte.Parse("213"),byte.MaxValue, byte.MaxValue, byte.MaxValue));
-            _rc.StrokeThickness = 1.5;
+            _rc.StrokeThickness = 1.3;
             gr.Children.Add(_rc);
-
             //Add Set the position
             Canvas.SetLeft(_rc, X_Coordinate);
             Canvas.SetTop(_rc, Y_Coordinate);

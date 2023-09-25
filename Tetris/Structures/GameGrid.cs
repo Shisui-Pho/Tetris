@@ -24,7 +24,7 @@ namespace Tetris.Structures
             GenerateGrid(gridCanvas);
         }//GetGrid method
 
-        private void GenerateGrid(Canvas gridCanvas)
+        public void GenerateGrid(Canvas gridCanvas)
         {
             List<Point[]> horizontalPoints = new List<Point[]>();
             List<Point[]> verticalPoints = new List<Point[]>();

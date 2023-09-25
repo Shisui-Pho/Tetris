@@ -55,27 +55,6 @@
                     <Border.Style>
                         <Style TargetType="Border">
                             <Setter Property="Background" Value="#FFFFFF"></Setter>
-                            <Style.Triggers>
-                                <EventTrigger RoutedEvent="Loaded">
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <ColorAnimationUsingKeyFrames
-                                                BeginTime="0:0:0"
-                                                Duration="0:0:20"
-                                                Storyboard.TargetProperty="Background.Color"
-                                                RepeatBehavior="Forever"
-                                                AutoReverse="True"
-                                                >
-                                                <LinearColorKeyFrame KeyTime="0:0:4" Value="Red"/>
-                                                <LinearColorKeyFrame KeyTime="0:0:8" Value="Blue"/>
-                                                <LinearColorKeyFrame KeyTime="0:0:12" Value="Aqua"/>
-                                                <LinearColorKeyFrame KeyTime="0:0:16" Value="Purple"/>
-                                                <LinearColorKeyFrame KeyTime="0:0:20" Value="GreenYellow"/>
-                                            </ColorAnimationUsingKeyFrames>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>                        
-                            </Style.Triggers>
                         </Style>
                     </Border.Style>
                     <Canvas 

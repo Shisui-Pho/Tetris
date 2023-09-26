@@ -1,4 +1,8 @@
-﻿using System;
+﻿/*
+ * Filename     : Block.cs
+ * Purpose      : This class will be useful in the creation and rotation of block and also getting random blocks.
+*/
+using System;
 using System.Collections.Generic;
 
 namespace Tetris.Structures

@@ -1,4 +1,8 @@
-﻿using System;
+﻿/*
+ * Filename     : LogicalGrid.cs
+ * Purpose      : This file containes the core of the game, all the "game" logic related to the grid and block movement is defined here 
+*/
+using System;
 using Tetris.Enums;
 using Tetris.Interfaces;
 namespace Tetris.Structures
@@ -77,7 +81,6 @@ namespace Tetris.Structures
         /// </summary>
         public void ResetGrid()
         {
-            //Re-initialize the grid
             InitializeGrid();
         }//ResetGrid
         /// <summary>
@@ -99,12 +102,9 @@ namespace Tetris.Structures
                 return status;
 
             //AT THIS POINT THE BLOCK IS GOOD TO GO
-            //int iToStartRow = StartRow;
-            //int iToStartColumn = StartColumn;
             
             int NumberOfRowsOfTheBlock = blockToMove.GetLength(0); //Number of rows
             int NumberOfColumnsOfTheColumn = blockToMove.GetLength(1);//Number of columns
-            
             
             if( action == Direction.MoveDown)
             {
@@ -120,71 +120,7 @@ namespace Tetris.Structures
                         }//end first if
                     }//end for current column
                  }//end for last row
-
             }//moving down
-            #region First Movement code (Bugs detected)
-            //for(int irow = 0; irow< noRows; irow++)
-            //{
-            //    for(int iCol = 0;iCol < noColumns; iCol++)
-            //    {
-            //        if(blockToMove[irow, iCol] != 0 || (Grid[StartRow + noRows,StartColumn + iCol] == 0 && blockToMove[irow,iCol] != 0))
-            //        {
-            //            Grid[StartRow + noRows, StartColumn + iCol] = blockToMove[irow, iCol];
-            //        }
-            //    }
-            //}
-            //If the move action is downwards
-            //if (action == Direction.MoveDown)
-            //{
-            //    for(int iCurrentRow = StartRow + noRows ; iCurrentRow >= StartRow + 1; iCurrentRow--)
-            //    {
-            //        for (int iCurrentColumn = StartColumn; iCurrentColumn < StartColumn + noColumns; iCurrentColumn++)
-            //        {
-            //            if(Grid[iCurrentRow, iCurrentColumn] == 0)
-            //                Grid[iCurrentRow, iCurrentColumn] = Grid[iCurrentRow - 1, iCurrentColumn];
-
-
-            //            //if (Grid[iCurrentRow - 1, iCurrentColumn] != 0 
-            //            //    ||(Grid[iCurrentRow, iCurrentColumn] == Grid[iCurrentRow+1, iCurrentColumn]))
-            //            //{
-            //            //    Grid[iCurrentRow, iCurrentColumn] = Grid[iCurrentRow - 1, iCurrentColumn];
-            //            //}
-            //        }//end columns loop
-            //    }//end rows loop
-            //}//end moving down movement
-            //if (action == Direction.MoveLeft)
-            //{
-            //    for (int iCurrentColumn = StartColumn -1; iCurrentColumn < StartColumn + NumberOfColumnsOfTheColumn + 1; iCurrentColumn++)
-            //    {
-            //        //TO DO : Move the block left
-            //        for (int iCurrentRow = StartRow; iCurrentRow < NumberOfRowsOfTheBlock + StartRow; iCurrentRow++)
-            //        {
-            //            try
-            //            {
-            //                if (Grid[iCurrentRow, iCurrentColumn + 1] >= 0)
-            //                    Grid[iCurrentRow, iCurrentColumn] = Grid[iCurrentRow, iCurrentColumn + 1];
-            //            }
-            //            catch { }
-            //        }//end for
-            //    }//end for
-            //}//end moving down movement
-
-            //if (action == Direction.MoveRight)
-            //{
-            //    for (int iCurrentColumn = StartColumn + NumberOfColumnsOfTheColumn; iCurrentColumn >= StartColumn; iCurrentColumn--)
-            //    {
-            //        for (int iCurrentRow = StartRow; iCurrentRow < NumberOfRowsOfTheBlock + StartRow; iCurrentRow++)
-            //        {
-            //            try
-            //            {
-            //                if (Grid[iCurrentRow, iCurrentColumn - 1] >= 0)
-            //                    Grid[iCurrentRow, iCurrentColumn] = Grid[iCurrentRow, iCurrentColumn - 1];
-            //            }
-            //            catch { }
-            //        }
-            //    }//end for
-            //}//end moving down movement
-            #endregion
             if (action == Direction.MoveLeft)
             {
                 for(int currentRow = StartRow; currentRow < StartRow + NumberOfRowsOfTheBlock; currentRow++)
@@ -216,83 +152,6 @@ namespace Tetris.Structures
             //EvaluateRowsAndRemove(ref iScore);
             return MovementStatus.CanMove;
         }//MoveBlock
-        /// <summary>
-        /// Add the newly rotated block to the grid starting from the position of the old block.
-        /// </summary>
-        /// <param name="oldBlock">The old block that was rottated(To remove).</param>
-        /// <param name="newBlock">The new block that needs to be added.</param>
-        /// <param name="iStartRow">The starting row index of the old block.</param>
-        /// <param name="iStartCol">The starting column index of the old block.</param>
-        public bool AddRotatedBlock(int[,] oldBlock, int[,] newBlock, int iStartRow, int iStartCol)
-        {
-            //Before doing the rotation, we must first check weather the block can be rotated or not
-            if (CannotRotate(oldBlock, iStartRow, iStartCol))
-                return false;
-
-            ReMoveOldBlock(oldBlock, iStartRow, iStartCol);
-            for (int i = 0; i < newBlock.GetLength(0); i++)
-            {
-                for (int j = 0; j < newBlock.GetLength(1); j++)
-                {
-                    //Place Block in the grid
-                    Grid[iStartRow + i, iStartCol + j] = newBlock[i, j];
-                }//end for {j}
-            }//end for {i}
-            return true;
-        }//AddRotatedBlock
-        private bool CannotRotate(int[,] oldBlock, int iStartRow, int iStartCol)
-        {
-            //TO NOTE : rows == columns and columns == rows for the new block
-            int rowLength = oldBlock.GetLength(0);
-            int colLength = oldBlock.GetLength(1);
-
-            //Checking with the assumption that it was rottated
-            if (rowLength + iStartCol >= Grid.GetLength(1))
-                return true;
-            if (colLength + iStartCol >= Grid.GetLength(0))
-                return true;
-
-            //Check if it was urottated
-            if (rowLength == colLength)
-                return false;//This is a n x n block, there is no need for the rotation
-
-
-            //Assuming that the block is roatated
-
-            if(rowLength> colLength)
-            {
-                //This means that we have to check on the Right of the block
-                //We just flip the block and check if it was rottated would there be obstecles that it will touch on the last column
-
-                for(int i = 0; i < colLength; i++)
-                {
-                    if (Grid[iStartRow + i, iStartCol + rowLength - 1] != 0)
-                        return true;
-                }//end for columns
-            }//end if rows are larger than the columns
-            else
-            {
-                //This means that we have to check on the bottom of the block
-                //We just flip the block and check if it was rottated would there be obstecles that it will touch at the last row
-                for (int i = 0; i<rowLength; i++)
-                {
-                    if (Grid[iStartRow + colLength -1, iStartCol + i] != 0)
-                        return true;
-                }//end for row
-            }//end else (else the rows are less than the columns       
-            return false;
-        }//Can roate
-        private void ReMoveOldBlock(int[,] block, int iStartRow, int iStartColum)
-        {
-            for(int i = 0; i< block.GetLength(0); i++)
-            {
-                for (int j = 0; j < block.GetLength(1); j++)
-                {
-                    //Replace the values of the block in the grid by zero {empty}
-                    Grid[iStartRow + i, iStartColum + j] = 0;
-                }//end for {j}
-            }//end for {i}
-        }//reMoveOldBlock
         private bool CanMove(int[,] blockToMove, int StartRow, int StartCol, Direction direction, out MovementStatus status)
         {
             int iReference;
@@ -383,49 +242,11 @@ namespace Tetris.Structures
                 return false;
             }//if game over
 
+            //Local variable that will be needed
             int noRows = block.GetLength(0);
             int noColumns = block.GetLength(1);
             int iCount = 0;
-            #region FirstCheck(Contained a lot of bugs)
-            //Default Check  
-            //for (int Columns = 0; Columns < noColumns; Columns++)
-            //{
-            //    //1. The row has totally nothing underneath it......
-            //    if (Grid[noRows + iStartRow, iStartCol + Columns] == 0
-            //        //The row makes a perfect fit with the block below it
-            //        || (Grid[noRows + iStartRow - 1, iStartCol + Columns] == 0 && Grid[noRows + iStartRow, iStartCol + Columns] != 0))
-            //    {
-            //        iCount++;
-            //    }//end if
-            //    //iReference++;
-            //}//end for
-            //if (iCount == noColumns)
-            //    //Can move down
-            //{
-            //    status = MovementStatus.CanMove;
-            //    return true;
-            //}
-            //else if((noColumns ==2 && noRows == 3) )//&& (block[1,0] == 0 || block[1,1] == 0))//The L blocks
-            //{
-            #endregion
-            //The 0' represent an empty slots
-            //The 1's represent the both L blocks(Left --> original L block reflected about the x-axis
-            //                                    (right--> inverse L block reflected about the x-axis)
-            //
-            //  0 0 0 0 0 0 0 0 0 0
-            //  0 0 0 0 0 0 0 0 0 0
-            //  0 0 0 0 0 0 0 0 0 0                     
-            //  0 0 0 0 0 0 0 0 0 0
-            //  0 0 0 1 1 0 0 0 1 1
-            //  0 0 0 1 0 0 0 0 0 1 
-            //  0 0 0 1 5 0 0 0 5 1
-            //  0 0 0 0 5 0 0 0 5 0
-            //  0 0 0 0 0 0 0 0 0 0
-            //According o the following if statement inside the loop, this is what happening
-            //-1. The first condition is for all flat suffaced blocks like the 2x2 square block, line block nad etc.
-            //-2. The second condition is for the blocks with possible zeros within their bound, e.g the Z block etc
-            //-3. The third condition is specifically for the L blocks.
-            //-4. Please note that the structure of the loops indicate that atleast "one" pair of condition need to be met, if not then it will check the other conditions
+
             int lastRow = iStartRow + noRows;
 
             //Bug to be fixed
@@ -439,7 +260,7 @@ namespace Tetris.Structures
             //0 0 1 1 0 0 0 0 0 0
             //0 1 1 0 0 0 0 0 0 0
             //0 0 0 0 0 0 0 0 0 0
-            //The last condition leaves room for a small bug which causes the S block to move down even though it is not supposed to
+            //The last condition in the first if statement leaves room for a small bug which causes the S block to move down even though it is not supposed to
             for (int currentColumn = iStartCol; currentColumn < noColumns + iStartCol; currentColumn++)
             {
                 if ((Grid[lastRow, currentColumn] != 0 && Grid[lastRow - 1, currentColumn] == 0)
@@ -472,9 +293,109 @@ namespace Tetris.Structures
             {
                 if (Grid[StartRow + block.GetLength(0), StartCol + col] != 0)
                     return false;
-            }//
+            }//end for columns
             return true;
         }//CheckForGameOver
+        /// <summary>
+        /// Insert a block inside the grid starting from the initial posistions.
+        /// </summary>
+        /// <param name="blockToInsert">The 2 dimension block to insert.</param>
+        /// <returns></returns>
+        public bool InsertBlock(int[,] blockToInsert)
+        {
+            int iColRef = StartColumnPosition;
+            int iRowRef = StartRowPosition;
+            if (!IsGameOver(iRowRef, iColRef, blockToInsert))
+                return false;
+            for (int row = 0; row < blockToInsert.GetLength(0); row++)
+            {
+                for (int col = 0; col < blockToInsert.GetLength(1); col++)
+                {
+                    Grid[iRowRef, iColRef] = blockToInsert[row, col];
+                    iColRef++;
+                }//end col for
+                iColRef = StartColumnPosition;
+                iRowRef++;
+            }//end row for
+            return true;
+        }//InsertBlock
+        /// <summary>
+        /// Add the newly rotated block to the grid starting from the position of the old block.
+        /// </summary>
+        /// <param name="oldBlock">The old block that was rottated(To remove).</param>
+        /// <param name="newBlock">The new block that needs to be added.</param>
+        /// <param name="iStartRow">The starting row index of the old block.</param>
+        /// <param name="iStartCol">The starting column index of the old block.</param>
+        public bool AddRotatedBlock(int[,] oldBlock, int[,] newBlock, int iStartRow, int iStartCol)
+        {
+            //Before doing the rotation, we must first check weather the block can be rotated or not
+            if (CannotRotate(oldBlock, iStartRow, iStartCol))
+                return false;
+
+            ReMoveOldBlock(oldBlock, iStartRow, iStartCol);
+            for (int i = 0; i < newBlock.GetLength(0); i++)
+            {
+                for (int j = 0; j < newBlock.GetLength(1); j++)
+                {
+                    //Place Block in the grid
+                    Grid[iStartRow + i, iStartCol + j] = newBlock[i, j];
+                }//end for {j}
+            }//end for {i}
+            return true;
+        }//AddRotatedBlock
+        private bool CannotRotate(int[,] oldBlock, int iStartRow, int iStartCol)
+        {
+            //TO NOTE : rows == columns and columns == rows for the new block
+            int rowLength = oldBlock.GetLength(0);
+            int colLength = oldBlock.GetLength(1);
+
+            //Checking with the assumption that it was rottated
+            if (rowLength + iStartCol >= Grid.GetLength(1))
+                return true;
+            if (colLength + iStartCol >= Grid.GetLength(0))
+                return true;
+
+            //Check if it was urottated
+            if (rowLength == colLength)
+                return false;//This is a n x n block, there is no need for the rotation
+
+
+            //Assuming that the block is roatated
+
+            if (rowLength > colLength)
+            {
+                //This means that we have to check on the Right of the block
+                //We just flip the block and check if it was rottated would there be obstecles that it will touch on the last column
+
+                for (int i = 0; i < colLength; i++)
+                {
+                    if (Grid[iStartRow + i, iStartCol + rowLength - 1] != 0)
+                        return true;
+                }//end for columns
+            }//end if rows are larger than the columns
+            else
+            {
+                //This means that we have to check on the bottom of the block
+                //We just flip the block and check if it was rottated would there be obstecles that it will touch at the last row
+                for (int i = 0; i < rowLength; i++)
+                {
+                    if (Grid[iStartRow + colLength - 1, iStartCol + i] != 0)
+                        return true;
+                }//end for row
+            }//end else (else the rows are less than the columns       
+            return false;
+        }//Can roate
+        private void ReMoveOldBlock(int[,] block, int iStartRow, int iStartColum)
+        {
+            for (int i = 0; i < block.GetLength(0); i++)
+            {
+                for (int j = 0; j < block.GetLength(1); j++)
+                {
+                    //Replace the values of the block in the grid by zero {empty}
+                    Grid[iStartRow + i, iStartColum + j] = 0;
+                }//end for {j}
+            }//end for {i}
+        }//reMoveOldBlock
         public void EvaluateRowsAndRemove(ref int iScore)
         {
             //Counters for loops
@@ -523,28 +444,5 @@ namespace Tetris.Structures
                 }//Loop throgh the columns
             }//Loop through the rows, starting from the bottom
         }//ReplaceRows
-        /// <summary>
-        /// Insert a block inside the grid starting from the initial posistions.
-        /// </summary>
-        /// <param name="blockToInsert">The 2 dimension block to insert.</param>
-        /// <returns></returns>
-        public bool InsertBlock(int[,] blockToInsert)
-        {
-            int iColRef = StartColumnPosition;
-            int iRowRef = StartRowPosition;
-            if (!IsGameOver(iRowRef, iColRef, blockToInsert))
-                return false;
-            for (int row = 0; row < blockToInsert.GetLength(0); row++)
-            {
-                for (int col = 0; col < blockToInsert.GetLength(1); col++)
-                {
-                    Grid[iRowRef, iColRef] = blockToInsert[row, col];
-                    iColRef++;
-                }//end col for
-                iColRef = StartColumnPosition;
-                iRowRef++;
-            }//end row for
-            return true;
-        }//InsertBlock
     }//class
 }//namesace

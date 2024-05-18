@@ -38,6 +38,8 @@ namespace Tetris.Structures
             InitializeGrid();
         }//LogicalGrid
         #endregion Constructor
+
+        #region Initializing Grid
         private void InitializeGrid()
         {
             //Set all the blocks to zero for the initial creation of the LogicalGrid
@@ -54,6 +56,9 @@ namespace Tetris.Structures
         {
             InitializeGrid();
         }//ResetGrid
+        #endregion Initializing grid
+
+        #region Moving a Block in the grid
         public GameStatus MoveBlock(int[,] blockToMove, Direction action, int StartRow, int StartColumn)
         {
             if (action == Direction.Rotated)
@@ -110,6 +115,7 @@ namespace Tetris.Structures
                 colIndex = block_to_move.GetLength(1) + StartCol;
             }//end row
         }//Move
+        #region Checking if moving is possible
         private bool CanMove(int[,] blockToMove, int StartRow, int StartCol, Direction direction, out GameStatus status)
         {
             //Assume that it is game over
@@ -202,7 +208,10 @@ namespace Tetris.Structures
             status = GameStatus.CanMove;
             return true;
         }//CanMoveRight
+        #endregion Checking if moving is possible
+        #endregion Moving a Block in the grid
 
+        #region GameOver
         private bool IsGameOver(int StartRow,int StartCol, int[,] block)
         {
             //The default starting position are ROW[5] COLUMN[5]
@@ -215,6 +224,9 @@ namespace Tetris.Structures
             }//end for columns
             return false;
         }//CheckForGameOver
+        #endregion GameOver
+
+        #region Adding and Rotatting a Block on the Grid
         public bool InsertBlock(int[,] blockToInsert)
         {
             int iColRef = StartColumnPosition;
@@ -303,6 +315,9 @@ namespace Tetris.Structures
                 }//end for {j}
             }//end for {i}
         }//reMoveOldBlock
+        #endregion Adding and Rotatting a Block on the Grid
+
+        #region Checking if rows are matching and removing 
         public void EvaluateRowsAndRemove(ref int iScore)
         {
             //Counters for loops
@@ -351,5 +366,6 @@ namespace Tetris.Structures
                 }//Loop throgh the columns
             }//Loop through the rows, starting from the bottom
         }//ReplaceRows
+        #endregion Checking if rows are matching and removing 
     }//class
 }//namesace

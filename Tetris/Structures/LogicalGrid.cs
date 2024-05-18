@@ -10,31 +10,17 @@ namespace Tetris.Structures
     //Grid Model
     public class LogicalGrid : ILogicalGrid
     {
-        /// <summary>
-        /// The Logical grid of the tetris game(2 dimension).
-        /// </summary>
+        //Properties
+        #region Properties of the game grid
         public int[,] Grid { get; }
-        /// <summary>
-        /// The size of each block in the grid based on the width if the canvas.
-        /// </summary>
         public int BlockSize { get; }
-
         public int RowCount { get; private set; }
-
         public int ColCount { get; private set; }
-
-        /// <summary>
-        /// The starting position of the row.
-        /// </summary>
         public readonly int StartRowPosition = 0;
-        /// <summary>
-        /// The starting position of the column
-        /// </summary>
         public readonly int StartColumnPosition;
-        /// <summary>
-        /// Creates a new instance of a logical grid.
-        /// </summary>
-        /// <param name="grid">The game grid object that will be used to scale the logical grid.</param>
+        #endregion Properties
+
+        #region Constructor
         public LogicalGrid(GameGrid grid)
         {
             //Set the grid
@@ -51,6 +37,7 @@ namespace Tetris.Structures
             RowCount = Grid.GetLength(0);
             InitializeGrid();
         }//LogicalGrid
+        #endregion Constructor
         private void InitializeGrid()
         {
             //Set all the blocks to zero for the initial creation of the LogicalGrid
@@ -63,22 +50,10 @@ namespace Tetris.Structures
             }//end for {i}
             //Test();
         }//InitializeGrid
-        /// <summary>
-        /// Resets the tetris grid by setting all block values to zero.
-        /// </summary>
         public void ResetGrid()
         {
             InitializeGrid();
         }//ResetGrid
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="blockToMove">The 2 dimension block to be moved.</param>
-        /// <param name="action">The dirction of movement.</param>
-        /// <param name="StartRow">The index of the starting row.</param>
-        /// <param name="StartColumn">The index of the starting Column.</param>
-        /// <param name="iScore">The score players score.</param>
-        /// <returns>Returns a movementStatus to show if a block was moved or not.</returns>
         public GameStatus MoveBlock(int[,] blockToMove, Direction action, int StartRow, int StartColumn)
         {
             if (action == Direction.Rotated)
@@ -135,7 +110,26 @@ namespace Tetris.Structures
                 colIndex = block_to_move.GetLength(1) + StartCol;
             }//end row
         }//Move
-        private bool CanMoveDown2(int[,] blockToMove, int StartRow,int StartCol,out GameStatus status)
+        private bool CanMove(int[,] blockToMove, int StartRow, int StartCol, Direction direction, out GameStatus status)
+        {
+            //Assume that it is game over
+            status = GameStatus.GameOver;
+
+            //First check if it is game over
+            if (IsGameOver(StartRow, StartCol, blockToMove))
+                return false;
+            switch (direction)
+            {
+                case Direction.MoveLeft:
+                    return CanMoveLeft(blockToMove, StartRow, StartCol, out status);
+                case Direction.MoveRight:
+                    return CanMoveRight(blockToMove, StartRow, StartCol, out status);
+                case Direction.MoveDown:
+                    return CanMoveDown(blockToMove, StartRow, StartCol, out status);
+            }
+            return default;
+        }//CanMove
+        private bool CanMoveDown(int[,] blockToMove, int StartRow,int StartCol,out GameStatus status)
         {
             //Assume that we cannot move down. hance new block
             status = GameStatus.Newblock;
@@ -205,29 +199,10 @@ namespace Tetris.Structures
             }
             if (countLen != blockToMove.GetLength(0))
                 return false;
-
             status = GameStatus.CanMove;
             return true;
         }//CanMoveRight
-        private bool CanMove(int[,] blockToMove, int StartRow, int StartCol, Direction direction, out GameStatus status)
-        {
-            //Assume that it is game over
-            status = GameStatus.GameOver;
 
-            //First check if it is game over
-            if (IsGameOver(StartRow, StartCol, blockToMove))
-                return false;
-            switch (direction)
-            {
-                case Direction.MoveLeft:
-                    return CanMoveLeft(blockToMove, StartRow, StartCol, out status);
-                case Direction.MoveRight:
-                    return CanMoveRight(blockToMove, StartRow, StartCol, out status);
-                case Direction.MoveDown:
-                    return CanMoveDown2(blockToMove, StartRow, StartCol, out status);
-            }
-            return default;
-        }//CanMove
         private bool IsGameOver(int StartRow,int StartCol, int[,] block)
         {
             //The default starting position are ROW[5] COLUMN[5]
@@ -240,11 +215,6 @@ namespace Tetris.Structures
             }//end for columns
             return false;
         }//CheckForGameOver
-        /// <summary>
-        /// Insert a block inside the grid starting from the initial posistions.
-        /// </summary>
-        /// <param name="blockToInsert">The 2 dimension block to insert.</param>
-        /// <returns></returns>
         public bool InsertBlock(int[,] blockToInsert)
         {
             int iColRef = StartColumnPosition;
@@ -263,17 +233,10 @@ namespace Tetris.Structures
             }//end row for
             return true;
         }//InsertBlock
-        /// <summary>
-        /// Add the newly rotated block to the grid starting from the position of the old block.
-        /// </summary>
-        /// <param name="oldBlock">The old block that was rottated(To remove).</param>
-        /// <param name="newBlock">The new block that needs to be added.</param>
-        /// <param name="iStartRow">The starting row index of the old block.</param>
-        /// <param name="iStartCol">The starting column index of the old block.</param>
         public bool AddRotatedBlock(int[,] oldBlock, int[,] newBlock, int iStartRow, int iStartCol)
         {
             //Before doing the rotation, we must first check weather the block can be rotated or not
-            if (CannotRotate(oldBlock, iStartRow, iStartCol))
+            if (CannotRotateBlock(oldBlock, iStartRow, iStartCol))
                 return false;
 
             ReMoveOldBlock(oldBlock, iStartRow, iStartCol);
@@ -287,7 +250,7 @@ namespace Tetris.Structures
             }//end for {i}
             return true;
         }//AddRotatedBlock
-        private bool CannotRotate(int[,] oldBlock, int iStartRow, int iStartCol)
+        private bool CannotRotateBlock(int[,] oldBlock, int iStartRow, int iStartCol)
         {
             //TO NOTE : rows == columns and columns == rows for the new block
             int rowLength = oldBlock.GetLength(0);

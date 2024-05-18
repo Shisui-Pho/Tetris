@@ -45,16 +45,16 @@ namespace Tetris
         #region EventsHandlers
         private void GameTimer_Tick(object sender, EventArgs e)
         {
-            MovementStatus st = L_GameGrid.MoveBlock(CurrentBlock, Direction.MoveDown, StartRow, StartCol);
-            if(st == MovementStatus.CanMove)
+            GameStatus st = L_GameGrid.MoveBlock(CurrentBlock, Direction.MoveDown, StartRow, StartCol);
+            if(st == GameStatus.CanMove)
             {
                 StartRow++;
                 MapLogicalGrid.MapGrid(gameGrid, L_GameGrid);
                 lblCurrentScore.Content = CurrentScore;
             }//can move
-            if (st == MovementStatus.GameOver)
+            if (st == GameStatus.GameOver)
                 GameOver();
-            if (st == MovementStatus.Newblock)
+            if (st == GameStatus.Newblock)
             {
                 L_GameGrid.EvaluateRowsAndRemove(ref CurrentScore);
                 NewBlock();
@@ -66,17 +66,17 @@ namespace Tetris
                 return;
             if (isGamePaused && !(e.Key == Key.P || e.Key == Key.Pause))
                 return;
-            MovementStatus st = MovementStatus.Default;
+            GameStatus st = GameStatus.Default;
             if (e.Key == Key.Left || e.Key == Key.A)
             {
                 st = L_GameGrid.MoveBlock(CurrentBlock, Direction.MoveLeft, StartRow, StartCol);
-                if (st == MovementStatus.CanMove)
+                if (st == GameStatus.CanMove)
                 {
                     StartCol--;
                     MapLogicalGrid.MapGrid(gameGrid, L_GameGrid);
                     lblCurrentScore.Content = CurrentScore;
                 }//can move
-                if (st == MovementStatus.GameOver)
+                if (st == GameStatus.GameOver)
                     GameOver();
                 //isMoveLeftPressed = true;
             }//Left key
@@ -84,26 +84,26 @@ namespace Tetris
             {
                 //Try to do the movement
                 st = L_GameGrid.MoveBlock(CurrentBlock, Direction.MoveRight, StartRow, StartCol);
-                if (st == MovementStatus.CanMove)
+                if (st == GameStatus.CanMove)
                 {
                     StartCol++;
                     MapLogicalGrid.MapGrid(gameGrid, L_GameGrid);
                     lblCurrentScore.Content = CurrentScore;
                 }//can move
-                if (st == MovementStatus.GameOver)
+                if (st == GameStatus.GameOver)
                     GameOver();
                 //isMoveRightPressed = true;
             }//Right key
             if( e.Key == Key.Down || e.Key == Key.S || e.Key == Key.Space)
             {
                 st = L_GameGrid.MoveBlock(CurrentBlock, Direction.MoveDown, StartRow, StartCol);
-                if(st == MovementStatus.CanMove)
+                if(st == GameStatus.CanMove)
                 {
                     StartRow++;
                     MapLogicalGrid.MapGrid(gameGrid, L_GameGrid);
                     lblCurrentScore.Content = CurrentScore;
                 }//cann move
-                if (st == MovementStatus.GameOver)
+                if (st == GameStatus.GameOver)
                     GameOver();
                 //isMoveDownPressed = true;
             }//Down key
@@ -132,7 +132,7 @@ namespace Tetris
             }//pause game
 
             //If a new block is needed
-            if (st == MovementStatus.Newblock)
+            if (st == GameStatus.Newblock)
             {
                 L_GameGrid.EvaluateRowsAndRemove(ref CurrentScore);
                 NewBlock();

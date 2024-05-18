@@ -4,7 +4,7 @@
 */
 namespace Tetris.Enums
 {
-    public enum MovementStatus
+    public enum GameStatus
     {
         GameOver,
         Newblock,

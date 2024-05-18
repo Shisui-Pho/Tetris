@@ -18,6 +18,11 @@ namespace Tetris.Structures
         /// The size of each block in the grid based on the width if the canvas.
         /// </summary>
         public int BlockSize { get; }
+
+        public int RowCount { get; private set; }
+
+        public int ColCount { get; private set; }
+
         /// <summary>
         /// The starting position of the row.
         /// </summary>
@@ -32,9 +37,18 @@ namespace Tetris.Structures
         /// <param name="grid">The game grid object that will be used to scale the logical grid.</param>
         public LogicalGrid(GameGrid grid)
         {
+            //Set the grid
             Grid = new int[grid.Rows, grid.Columns];
+
+            //Set the properties
             StartColumnPosition = Grid.GetLength(1) / 2;
+
+            //Set the block size
             BlockSize = grid.BlockSize;
+
+            //Set the borad sizes
+            ColCount = Grid.GetLength(1);
+            RowCount = Grid.GetLength(0);
             InitializeGrid();
         }//LogicalGrid
         private void InitializeGrid()
@@ -121,153 +135,110 @@ namespace Tetris.Structures
                 colIndex = block_to_move.GetLength(1) + StartCol;
             }//end row
         }//Move
-        private bool CanMoveDown(int[,] blockToMove, int StartRow,int StartCol,out GameStatus status)
+        private bool CanMoveDown2(int[,] blockToMove, int StartRow,int StartCol,out GameStatus status)
         {
+            //Assume that we cannot move down. hance new block
+            status = GameStatus.Newblock;
+            //Moving down means that there must be no block beneath the current block
+            //First check for bounds
+            int nexBlockRow = StartRow + blockToMove.GetLength(0);
+            if(nexBlockRow >= RowCount)
+            {
+                //status = GameStatus.Newblock;
+                return false;
+            }//end if we are at the bottom
 
-        }
+            int countLen = 0;
+            //For special cases of L block, and Z blocks, some other conditions must be considered as well
+            for(int currentCol = StartCol; currentCol < StartCol + blockToMove.GetLength(1); currentCol++)
+            {
+                //Here if the block can be moved, we have some cases to consider
+                //-Case 1: If there is nothing underneath the block
+                //-Case 2: If there is another block underneath but leaves a space for the current block to fit in
+                //-Case 3: If there is a block underneath and the current block has a space at that position
+
+                if (Grid[nexBlockRow, currentCol] == 0|| (Grid[nexBlockRow, currentCol] != 0 && Grid[nexBlockRow - 1, currentCol] == 0))
+                    countLen++;
+            }//end for
+            if (countLen != blockToMove.GetLength(1))
+                return false;
+
+            status = GameStatus.CanMove;
+            return true;
+        }//CanMoveDown2
+        private bool CanMoveLeft(int[,] blockToMove, int StartRow, int StartCol, out GameStatus status)
+        {
+            status = GameStatus.CannotMoveLeft;
+
+            //First check for the bounds
+            if (StartCol <= 0)
+                return false;
+            int countLen = 0;
+
+            //Now check for all block on the left of the current block
+            for(int currentRow = StartRow; currentRow < StartRow + blockToMove.GetLength(0); currentRow++)
+            {
+                //Check if there are no blocks on the left of the current block
+                if (Grid[currentRow, StartCol - 1] == 0 || (Grid[currentRow, StartCol - 1] != 0 && Grid[currentRow, StartCol] == 0))
+                    countLen++;
+            }//end for
+
+            if (countLen != blockToMove.GetLength(0))
+                return false;
+
+            status = GameStatus.CanMove;
+            return true;
+        }//CanMoveLeft
+        private bool CanMoveRight(int[,] blockToMove, int StartRow, int StartCol, out GameStatus status)
+        {
+            status = GameStatus.CannotMoveRight;
+            int nextColumn = StartCol + blockToMove.GetLength(1);
+            //Check for bounds
+            if (nextColumn >= ColCount)
+                return false;
+            int countLen = 0;
+            //Now check for all block on the right of the block
+            for(int currentRow = StartRow; currentRow < StartRow + blockToMove.GetLength(0); currentRow++)
+            {
+                if (Grid[currentRow, nextColumn] == 0 || (Grid[currentRow, nextColumn] != 0 && Grid[currentRow, nextColumn - 1] == 0))
+                    countLen++;
+            }
+            if (countLen != blockToMove.GetLength(0))
+                return false;
+
+            status = GameStatus.CanMove;
+            return true;
+        }//CanMoveRight
         private bool CanMove(int[,] blockToMove, int StartRow, int StartCol, Direction direction, out GameStatus status)
         {
-            int iReference;
-            int noRows = blockToMove.GetLength(0);
-            int noColumns = blockToMove.GetLength(1);
-            //bool canMove = false;
-            if (direction == Direction.MoveDown)
-            {
-                //Check grid bounds first
-                if ((StartRow + noRows) >= Grid.GetLength(0))
-                {
-                    status = GameStatus.Newblock;
-                    return false;
-                }
-                GameStatus _status;
-                if (CanMoveDown(blockToMove, StartRow, StartCol, out _status))
-                {
-                    status = _status;
-                    return true;
-                }
-                status = _status; 
+            //Assume that it is game over
+            status = GameStatus.GameOver;
+
+            //First check if it is game over
+            if (IsGameOver(StartRow, StartCol, blockToMove))
                 return false;
-            }//end if  {ToDown movement}
-
-            #region BugDetected
-            if (direction == Direction.MoveLeft)
+            switch (direction)
             {
-                //Check grid bounds first
-                if (StartCol <= 0)
-                {
-                    status = GameStatus.CannotMoveLeft;
-                    return false;
-                }                    
-                //Check the left of the block
-                iReference = StartRow;
-                for(int iRow = 0; iRow < noRows; iRow++)
-                {
-                    //BUG DETECTED
-                    if(Grid[iReference, StartCol - 1] != 0)
-                    {
-                        status = GameStatus.CannotMoveLeft;
-                        return false;
-                    }
-                    iReference++;
-                }//end for {iRow}
-                //If all tests are passed
-                status = GameStatus.CanMove;
-                return true;
-            }//end if {ToLeft movement}
-            if(direction == Direction.MoveRight)
-            {
-                //Check grid bounds first
-                if (StartCol + noColumns >= Grid.GetLength(1))
-                {
-                    status = GameStatus.CannotMoveRight;
-                    return false;
-                }
-
-                //Check the right of the block
-                iReference = StartRow;
-                for(int iRow = 0; iRow < noRows; iRow++)
-                {
-                    //BUG DETECTION
-                    if (Grid[iReference, StartCol + noColumns] != 0)
-                    {
-                        status = GameStatus.CannotMoveRight;
-                        return false;
-                    }
-                    iReference++;
-                }//end for {iCol}
-
-                //If all tests are passed
-                status = GameStatus.CanMove;
-                return true;
-            }//end if {ToRight movement}
-            #endregion
-
-            //If none of the direction
-            status = GameStatus.Default;
-            return false;
+                case Direction.MoveLeft:
+                    return CanMoveLeft(blockToMove, StartRow, StartCol, out status);
+                case Direction.MoveRight:
+                    return CanMoveRight(blockToMove, StartRow, StartCol, out status);
+                case Direction.MoveDown:
+                    return CanMoveDown2(blockToMove, StartRow, StartCol, out status);
+            }
+            return default;
         }//CanMove
-        private bool CanMoveDown(int[,] block, int iStartRow, int iStartCol, out GameStatus status)
-        {
-            //Game over check should be first
-            if(!IsGameOver(iStartRow, iStartCol, block))
-            {
-                status = GameStatus.GameOver;
-                return false;
-            }//if game over
-
-            //Local variable that will be needed
-            int noRows = block.GetLength(0);
-            int noColumns = block.GetLength(1);
-            int iCount = 0;
-
-            int lastRow = iStartRow + noRows;
-
-            //Bug to be fixed
-            //0 0 0 0 0 0 0 0 0 0
-            //0 0 0 0 0 0 0 0 0 0
-            //0 0 0 0 0 0 0 0 0 0
-            //0 0 0 0 0 0 0 0 0 0
-            //0 0 0 0 0 0 0 0 0 0
-            //0 0 0 0 1 1 0 0 0 0
-            //0 0 0 2 2 1 1 0 0 0
-            //0 0 1 1 0 0 0 0 0 0
-            //0 1 1 0 0 0 0 0 0 0
-            //0 0 0 0 0 0 0 0 0 0
-            //The last condition in the first if statement leaves room for a small bug which causes the S block to move down even though it is not supposed to
-            for (int currentColumn = iStartCol; currentColumn < noColumns + iStartCol; currentColumn++)
-            {
-                if ((Grid[lastRow, currentColumn] != 0 && Grid[lastRow - 1, currentColumn] == 0)
-                    || (Grid[lastRow, currentColumn] == 0 && Grid[lastRow - 1, currentColumn] != 0
-                    || Grid[lastRow, currentColumn] == 0 && Grid[lastRow - 1, currentColumn] == 0)//BUG HERE
-                    )
-                {
-                    iCount++;
-                }//end if
-                else if ((Grid[lastRow- 2, currentColumn] == 0 && Grid[lastRow - 1, currentColumn] != 0 && noRows == 3 && noColumns == 2) 
-                        && !(block[noRows -1, 0] ==1 && block[noRows - 1,1] == 1  ))
-                    iCount++;                                                                           
-            }//end for loop
-
-            //Moving down means that the block fits perfectly or there's nothing below it
-            if(iCount == noColumns)
-            {
-                status = GameStatus.CanMove;
-                return true;
-            }//if can move down
-            status = GameStatus.Newblock;
-            return false;
-        }//IsPerfectMatch
         private bool IsGameOver(int StartRow,int StartCol, int[,] block)
         {
             //The default starting position are ROW[5] COLUMN[5]
             if (StartRow != StartRowPosition)//Not in the first row
-                return true; //It is not game over yet
+                return false; //It is not game over yet
             for (int col = 0; col < block.GetLength(1); col++)
             {
                 if (Grid[StartRow + block.GetLength(0), StartCol + col] != 0)
-                    return false;
+                    return true;
             }//end for columns
-            return true;
+            return false;
         }//CheckForGameOver
         /// <summary>
         /// Insert a block inside the grid starting from the initial posistions.
@@ -278,7 +249,7 @@ namespace Tetris.Structures
         {
             int iColRef = StartColumnPosition;
             int iRowRef = StartRowPosition;
-            if (!IsGameOver(iRowRef, iColRef, blockToInsert))
+            if (IsGameOver(iRowRef, iColRef, blockToInsert))
                 return false;
             for (int row = 0; row < blockToInsert.GetLength(0); row++)
             {

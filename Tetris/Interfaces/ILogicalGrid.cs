@@ -5,6 +5,8 @@ namespace Tetris.Interfaces
     {
         int[,] Grid { get;}
         int BlockSize { get; }
+        int RowCount { get; }
+        int ColCount { get; }
         void ResetGrid();
         bool InsertBlock(int[,] blockToInsert);
         GameStatus MoveBlock(int[,] blockToMove,Direction direction, int StartRow, int StartColumn);

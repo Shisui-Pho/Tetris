@@ -24,7 +24,7 @@ namespace Tetris.Services
             {
                 for (int iColumn = 0; iColumn < grid.Grid.GetLength(1); iColumn++)
                 {
-                    MapColours(ref gridCanvas, X_Coordinate, Y_Coordinate,
+                    MapColours(gridCanvas, X_Coordinate, Y_Coordinate,
                                GetBrush(grid.Grid[iRow, iColumn]),
                                new System.Drawing.Size() { Width = grid.BlockSize, Height = grid.BlockSize }
                                );
@@ -34,32 +34,6 @@ namespace Tetris.Services
                 Y_Coordinate += grid.BlockSize;//Move Down
             }//end Row loop
         }//Map
-        /// <summary>
-        /// Create a graphic representation of the 2d array grid
-        /// </summary>
-        /// <param name="gridCanvas">The Canvas UI element for which the grid will be drawed in.</param>
-        /// <param name="grid">The grid object to draw the grid</param>
-        public static void MapGrid(ref Canvas gridCanvas, LogicalGrid grid)
-        {
-            //Initial X and Y 
-            //--Represents the (0,0) location at the top coner
-            int X_Coordinate = 0;
-            int Y_Coordinate = 0;
-            for(int iRow = 0; iRow < grid.Grid.GetLength(0); iRow++)
-            {
-                for(int iColumn =0; iColumn < grid.Grid.GetLength(1); iColumn++)
-                {
-                    MapColours(ref gridCanvas,X_Coordinate, Y_Coordinate,
-                               GetBrush(grid.Grid[iRow, iColumn]),
-                               new System.Drawing.Size(){ Width= grid.BlockSize, Height = grid.BlockSize}
-                               );
-                    X_Coordinate += grid.BlockSize; //Move right
-                }//end Column loop
-                X_Coordinate = 0;//Start from zero again
-                Y_Coordinate += grid.BlockSize;//Move Down
-            }//end Row loop
-        }//Map
-
         private static SolidColorBrush GetBrush(int iBlockValue)
         {
             if (iBlockValue == 1 || iBlockValue == 4 || iBlockValue == 7)
@@ -71,7 +45,7 @@ namespace Tetris.Services
 
             return new SolidColorBrush(Color.FromRgb(byte.MinValue, byte.MinValue, byte.MinValue));
         }//ChooseColor
-        private static void MapColours(ref Canvas gr, int X_Coordinate, int Y_Coordinate, SolidColorBrush br,System.Drawing.Size size)
+        private static void MapColours(Canvas gr, int X_Coordinate, int Y_Coordinate, SolidColorBrush br,System.Drawing.Size size)
         {
             Rectangle _rc = new Rectangle();
             _rc.Width = size.Width;

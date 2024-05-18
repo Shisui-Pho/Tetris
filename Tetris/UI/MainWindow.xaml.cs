@@ -12,9 +12,6 @@ using Tetris.Structures;
 
 namespace Tetris
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         //Game objects
@@ -219,37 +216,4 @@ namespace Tetris
         }//RestartGame
         #endregion
     }//Class
-    #region GamePlay Test
-    //public class GamePlay
-    //{
-    //    private LogicalGrid Grid;
-    //    private Blocks Blocks;
-    //    private int[,] _ToMove;
-    //    int i = 5, j = 5;
-    //    private Canvas cn;
-    //    public GamePlay(Canvas canvas)
-    //    {
-    //        GameGrid gridLayout = new GameGrid();
-    //        gridLayout.GetGrid(canvas);
-    //        Blocks = new Blocks();
-    //        Grid = new LogicalGrid(gridLayout);
-    //        _ToMove = Blocks.GetRandomBlock();
-    //        Grid.AddRotatedBlock(_ToMove, _ToMove, i, j);
-    //        MapLogicalGrid.MapGrid(canvas, Grid);
-    //        DispatcherTimer tmr = new DispatcherTimer();
-    //        tmr.Interval = new TimeSpan(0, 0, 1);
-    //        tmr.Tick += Tmr_Tick;
-    //        cn = canvas;
-    //        tmr.Start();
-    //    }//ctor 01
-    //    private void Tmr_Tick(object sender, EventArgs e)
-    //    {
-    //        int iScore = 0;
-    //        Grid.MoveBlock(_ToMove, Direction.MoveDown, i, j);
-    //        MapLogicalGrid.MapGrid(cn, Grid);
-    //        i++;
-    //        //j++;
-    //    }//Tmr_Tick
-        #endregion
-    //}//class
 }//namespace

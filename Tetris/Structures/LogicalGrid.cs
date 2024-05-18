@@ -59,9 +59,9 @@ namespace Tetris.Structures
         #endregion Initializing grid
 
         #region Moving a Block in the grid
-        public GameStatus MoveBlock(int[,] blockToMove, Direction action, int StartRow, int StartColumn)
+        public GameStatus MoveBlock(int[,] blockToMove, MoveDirection action, int StartRow, int StartColumn)
         {
-            if (action == Direction.Rotated)
+            if (action == MoveDirection.Rotated)
             {
                 throw new ArgumentException("Cannot move block that is being rotated, call AddRotatedBlockFirst");
             }
@@ -73,7 +73,7 @@ namespace Tetris.Structures
 
             return GameStatus.CanMove;
         }//MoveBlock
-        private void MoveBlock(int[,] block_to_move,int startRow, int StartCol, Direction dir)
+        private void MoveBlock(int[,] block_to_move,int startRow, int StartCol, MoveDirection dir)
         {
             int colIndex = block_to_move.GetLength(1) + StartCol;
             //Loop through the rowns of the block starting at the bottom row
@@ -84,14 +84,14 @@ namespace Tetris.Structures
                 {
                     switch (dir)
                     {
-                        case Direction.MoveLeft:
+                        case MoveDirection.MoveLeft:
                             //Move the block left
                             if (Grid[currentRow - 1, currentCol - 1] != 0)
                                 continue;
                             Grid[currentRow - 1, currentCol - 1] = Grid[currentRow - 1, currentCol];
                             Grid[currentRow - 1, currentCol] = 0;
                             break;
-                        case Direction.MoveRight:
+                        case MoveDirection.MoveRight:
                             //Move the block right
                             if (Grid[currentRow - 1, colIndex] != 0)
                                 continue;
@@ -100,7 +100,7 @@ namespace Tetris.Structures
 
                             colIndex--;
                             break;
-                        case Direction.MoveDown:
+                        case MoveDirection.MoveDown:
                             //Move the block down
                             if (Grid[currentRow, currentCol] != 0)
                                 continue;
@@ -116,7 +116,7 @@ namespace Tetris.Structures
             }//end row
         }//Move
         #region Checking if moving is possible
-        private bool CanMove(int[,] blockToMove, int StartRow, int StartCol, Direction direction, out GameStatus status)
+        private bool CanMove(int[,] blockToMove, int StartRow, int StartCol, MoveDirection direction, out GameStatus status)
         {
             //Assume that it is game over
             status = GameStatus.GameOver;
@@ -126,11 +126,11 @@ namespace Tetris.Structures
                 return false;
             switch (direction)
             {
-                case Direction.MoveLeft:
+                case MoveDirection.MoveLeft:
                     return CanMoveLeft(blockToMove, StartRow, StartCol, out status);
-                case Direction.MoveRight:
+                case MoveDirection.MoveRight:
                     return CanMoveRight(blockToMove, StartRow, StartCol, out status);
-                case Direction.MoveDown:
+                case MoveDirection.MoveDown:
                     return CanMoveDown(blockToMove, StartRow, StartCol, out status);
             }
             return default;

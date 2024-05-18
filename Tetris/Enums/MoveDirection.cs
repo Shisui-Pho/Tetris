@@ -4,7 +4,7 @@
 */
 namespace Tetris.Enums
 {
-    public enum Direction
+    public enum MoveDirection
     {
         MoveLeft,
         MoveRight,

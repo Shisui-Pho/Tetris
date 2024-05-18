@@ -45,7 +45,7 @@ namespace Tetris
         #region EventsHandlers
         private void GameTimer_Tick(object sender, EventArgs e)
         {
-            GameStatus st = L_GameGrid.MoveBlock(CurrentBlock, Direction.MoveDown, StartRow, StartCol);
+            GameStatus st = L_GameGrid.MoveBlock(CurrentBlock, MoveDirection.MoveDown, StartRow, StartCol);
             if(st == GameStatus.CanMove)
             {
                 StartRow++;
@@ -69,7 +69,7 @@ namespace Tetris
             GameStatus st = GameStatus.Default;
             if (e.Key == Key.Left || e.Key == Key.A)
             {
-                st = L_GameGrid.MoveBlock(CurrentBlock, Direction.MoveLeft, StartRow, StartCol);
+                st = L_GameGrid.MoveBlock(CurrentBlock, MoveDirection.MoveLeft, StartRow, StartCol);
                 if (st == GameStatus.CanMove)
                 {
                     StartCol--;
@@ -83,7 +83,7 @@ namespace Tetris
             if( e.Key == Key.Right || e.Key == Key.D)
             {
                 //Try to do the movement
-                st = L_GameGrid.MoveBlock(CurrentBlock, Direction.MoveRight, StartRow, StartCol);
+                st = L_GameGrid.MoveBlock(CurrentBlock, MoveDirection.MoveRight, StartRow, StartCol);
                 if (st == GameStatus.CanMove)
                 {
                     StartCol++;
@@ -96,7 +96,7 @@ namespace Tetris
             }//Right key
             if( e.Key == Key.Down || e.Key == Key.S || e.Key == Key.Space)
             {
-                st = L_GameGrid.MoveBlock(CurrentBlock, Direction.MoveDown, StartRow, StartCol);
+                st = L_GameGrid.MoveBlock(CurrentBlock, MoveDirection.MoveDown, StartRow, StartCol);
                 if(st == GameStatus.CanMove)
                 {
                     StartRow++;

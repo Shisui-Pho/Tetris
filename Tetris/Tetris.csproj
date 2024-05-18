@@ -65,7 +65,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Enums\GameStatus.cs" />
-    <Compile Include="Enums\MoveAction.cs" />
+    <Compile Include="Enums\MoveDirection.cs" />
     <Compile Include="Interfaces\ILogicalGrid.cs" />
     <Compile Include="Services\MapLogicalGrid.cs" />
     <Compile Include="Structures\Blocks.cs" />

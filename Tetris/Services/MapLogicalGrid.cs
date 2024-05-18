@@ -20,15 +20,17 @@ namespace Tetris.Services
             //--Represents the (0,0) location at the top coner
             int X_Coordinate = 0;
             int Y_Coordinate = 0;
+
+            System.Drawing.Size size = new System.Drawing.Size() { Width = grid.BlockSize, Height = grid.BlockSize };
             for (int iRow = 0; iRow < grid.Grid.GetLength(0); iRow++)
             {
                 for (int iColumn = 0; iColumn < grid.Grid.GetLength(1); iColumn++)
                 {
-                    MapColours(gridCanvas, X_Coordinate, Y_Coordinate,
-                               GetBrush(grid.Grid[iRow, iColumn]),
-                               new System.Drawing.Size() { Width = grid.BlockSize, Height = grid.BlockSize }
-                               );
-                    X_Coordinate += grid.BlockSize; //Move right
+                    //Get the required values 
+                    SolidColorBrush brush = GetBrush(grid.Grid[iRow, iColumn]);
+                    MapColours(gridCanvas, X_Coordinate, Y_Coordinate, brush, size);
+
+                    X_Coordinate += grid.BlockSize; //Move to the right
                 }//end Column loop
                 X_Coordinate = 0;//Start from zero again
                 Y_Coordinate += grid.BlockSize;//Move Down

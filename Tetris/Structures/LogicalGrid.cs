@@ -115,6 +115,69 @@ namespace Tetris.Structures
                 colIndex = block_to_move.GetLength(1) + StartCol;
             }//end row
         }//Move
+
+        #region using IBlock
+        public GameStatus MoveBlock(int[,] blockToMove, MoveDirection action, int StartRow, int StartColumn)
+        {
+            if (action == MoveDirection.Rotated)
+            {
+                throw new ArgumentException("Cannot move block that is being rotated, call AddRotatedBlockFirst");
+            }
+            if (!CanMove(blockToMove, StartRow, StartColumn, action, out GameStatus status)) //Evaluate all possible movements
+                return status;
+
+            //At this point we are ready to move
+            MoveBlock(blockToMove, StartRow, StartColumn, action);
+
+            return GameStatus.CanMove;
+        }//MoveBlock
+
+
+        private void MoveBlock(IBlock block_to_move, int startRow, int StartCol, MoveDirection dir)
+        {
+            int colIndex = block_to_move.Length + StartCol;
+            //Loop through the rowns of the block starting at the bottom row
+            for (int currentRow = block_to_move.Height+ startRow; currentRow > startRow; currentRow--)
+            {
+                //Loop through the columns of the block
+                for (int currentCol = StartCol; currentCol < StartCol + block_to_move.Length; currentCol++)
+                {
+                    switch (dir)
+                    {
+                        case MoveDirection.MoveLeft:
+                            //Move the block left
+                            if (Grid[currentRow - 1, currentCol - 1] != 0)
+                                continue;
+                            Grid[currentRow - 1, currentCol - 1] = Grid[currentRow - 1, currentCol];
+                            Grid[currentRow - 1, currentCol] = 0;
+                            break;
+                        case MoveDirection.MoveRight:
+                            //Move the block right
+                            if (Grid[currentRow - 1, colIndex] != 0)
+                                continue;
+                            Grid[currentRow - 1, colIndex] = Grid[currentRow - 1, colIndex - 1];
+                            Grid[currentRow - 1, colIndex - 1] = 0;
+
+                            colIndex--;
+                            break;
+                        case MoveDirection.MoveDown:
+                            //Move the block down
+                            if (Grid[currentRow, currentCol] != 0)
+                                continue;
+                            Grid[currentRow, currentCol] = Grid[currentRow - 1, currentCol];
+                            Grid[currentRow - 1, currentCol] = 0; //Make the previous row empty
+                            break;
+                        default:
+                            break;
+                    }//end switch
+                }//end column
+                //Reset the column index
+                colIndex = block_to_move.Length + StartCol;
+            }//end row
+        }//Move
+        #endregion using IBlock
+
+
         #region Checking if moving is possible
         private bool CanMove(int[,] blockToMove, int StartRow, int StartCol, MoveDirection direction, out GameStatus status)
         {
@@ -156,9 +219,12 @@ namespace Tetris.Structures
                 //-Case 1: If there is nothing underneath the block
                 //-Case 2: If there is another block underneath but leaves a space for the current block to fit in
                 //-Case 3: If there is a block underneath and the current block has a space at that position
-
                 if (Grid[nexBlockRow, currentCol] == 0|| (Grid[nexBlockRow, currentCol] != 0 && Grid[nexBlockRow - 1, currentCol] == 0))
                     countLen++;
+                //
+
+
+
             }//end for
             if (countLen != blockToMove.GetLength(1))
                 return false;

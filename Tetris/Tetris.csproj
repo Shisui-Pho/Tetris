@@ -68,9 +68,12 @@
     <Compile Include="Enums\MoveDirection.cs" />
     <Compile Include="Interfaces\ILogicalGrid.cs" />
     <Compile Include="Services\MapLogicalGrid.cs" />
+    <Compile Include="Structures\Block.cs" />
     <Compile Include="Structures\Blocks.cs" />
     <Compile Include="Structures\GameGrid.cs" />
+    <Compile Include="Interfaces\IBlock.cs" />
     <Compile Include="Structures\LogicalGrid.cs" />
+    <Compile Include="Enums\TypeOfBlock.cs" />
     <Compile Include="UI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

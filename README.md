@@ -2,7 +2,7 @@
 A Tetris game which is build using the wpf and C# technoologies.  
   
   
-In this project I demonstrate my skill of using single and multidimensional arrays as they are also important in data structures.  
+In this project I demonstrate my skills of using single and multidimensional arrays as they are important in data structures.  
 
 
 # A few snipets of the game 

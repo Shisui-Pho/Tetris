@@ -117,20 +117,20 @@ namespace Tetris.Structures
         }//Move
 
         #region using IBlock
-        public GameStatus MoveBlock(int[,] blockToMove, MoveDirection action, int StartRow, int StartColumn)
-        {
-            if (action == MoveDirection.Rotated)
-            {
-                throw new ArgumentException("Cannot move block that is being rotated, call AddRotatedBlockFirst");
-            }
-            if (!CanMove(blockToMove, StartRow, StartColumn, action, out GameStatus status)) //Evaluate all possible movements
-                return status;
+        //public GameStatus MoveBlock(int[,] blockToMove, MoveDirection action, int StartRow, int StartColumn)
+        //{
+        //    if (action == MoveDirection.Rotated)
+        //    {
+        //        throw new ArgumentException("Cannot move block that is being rotated, call AddRotatedBlockFirst");
+        //    }
+        //    if (!CanMove(blockToMove, StartRow, StartColumn, action, out GameStatus status)) //Evaluate all possible movements
+        //        return status;
 
-            //At this point we are ready to move
-            MoveBlock(blockToMove, StartRow, StartColumn, action);
+        //    //At this point we are ready to move
+        //    MoveBlock(blockToMove, StartRow, StartColumn, action);
 
-            return GameStatus.CanMove;
-        }//MoveBlock
+        //    return GameStatus.CanMove;
+        //}//MoveBlock
 
 
         private void MoveBlock(IBlock block_to_move, int startRow, int StartCol, MoveDirection dir)
